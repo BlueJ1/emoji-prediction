@@ -1,5 +1,10 @@
 # ML Project Template 🛠️
 
+## Data
+We use the train.txt and test.txt files from
+[Kaggle](https://www.kaggle.com/datasets/rexhaif/emojifydata-en?select=train.txt) as our train and test data.
+Please download the data and put it in the corresponding data folder.
+
 **Welcome to Machine Learning Practical!** This template is designed to streamline the development process and boost the quality of your code.
 
 Before getting started with your projects, we encourage you to carefully read the sections below and familiarise yourselves with the proposed tools.
@@ -105,7 +110,7 @@ Your repository should look something like this:
 ├───data  # Stores .csv
 ├───models  # Stores .pkl
 ├───notebooks  # Contains experimental .ipynbs
-├───project_name
+├───emoji-prediction
 │   ├───data  # For data processing, not storing .csv
 │   ├───features
 │   └───models  # For model creation, not storing .pkl
