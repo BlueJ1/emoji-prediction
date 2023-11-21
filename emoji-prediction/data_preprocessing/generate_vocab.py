@@ -19,7 +19,7 @@ with open(vocab_path, 'w+', encoding='utf-8') as file:
 
 emoji_vocab = {}
 
-with open(train_path, 'r') as f:
+with open(train_path, 'r', encoding='utf-8') as f:
     for i, line in enumerate(f):
         split = line.split()
         if len(split) == 2:

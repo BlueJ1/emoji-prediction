@@ -13,15 +13,15 @@ def parse_to_df(data_path: Path = None, file_path: Path = None, size_to_read: in
     vocab_path = data_path / 'vocab.txt'
     emoji_path = data_path / 'emojis.txt'
 
-    with open(vocab_path, 'r') as f:
+    with open(vocab_path, 'r', encoding='utf-8') as f:
         word_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 
-    with open(emoji_path, 'r') as f:
+    with open(emoji_path, 'r', encoding='utf-8') as f:
         emoji_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 
     sequences = []
 
-    with open(file_path, "r") as f:
+    with open(file_path, "r", encoding='utf-8') as f:
         if size_to_read:
             lines = f.readlines(size_to_read)
         else:
