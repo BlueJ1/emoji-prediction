@@ -5,7 +5,6 @@ O
 :speaking_head:
 :purple_heart:
 :sparkles:
-:clapping_hands:
 :loudly_crying_face:
 :smiling_face_with_heart-eyes:
 :person_shrugging:
@@ -16,7 +15,6 @@ O
 :raising_hands:
 :trophy:
 :beaming_face_with_smiling_eyes:
-:backhand_index_pointing_down:
 :two_hearts:
 :heart_suit:
 :thumbs_up:
@@ -25,7 +23,6 @@ O
 :skull:
 :smiling_face:
 :crying_face:
-:police_car_light:
 :OK_hand:
 :blue_heart:
 :winking_face:
@@ -34,6 +31,7 @@ O
 :double_exclamation_mark:
 :smiling_face_with_smiling_eyes:
 :smiling_face_with_sunglasses:
+:backhand_index_pointing_down:
 :folded_hands:
 :rolling_on_the_floor_laughing:
 :thinking_face:
@@ -42,9 +40,11 @@ O
 :right_arrow:
 :collision:
 :backhand_index_pointing_right:
+:clapping_hands:
 :yellow_heart:
 :eyes:
 :sparkling_heart:
 :heavy_check_mark:
+:police_car_light:
 :female_sign:
 :male_sign:
