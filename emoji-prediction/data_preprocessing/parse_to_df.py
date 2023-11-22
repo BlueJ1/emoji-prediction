@@ -32,18 +32,13 @@ def parse_to_df(data_path: Path = None, file_path: Path = None, size_to_read: in
         for line in lines:
             line = line.strip()
             if not line:
-                sequences.append([np.asarray(sequence_words), np.asarray(sequence_emojis)])
+                sequences.append([np.asarray(sequence_words, dtype=np.int32),
+                                  np.asarray(sequence_emojis, dtype=np.int32)])
                 sequence_i += 1
                 sequence_words = []
                 sequence_emojis = []
-            elif len(line.split()) == 1:
-                sequence_words.append(word_vocab[' '])
-                sequence_emojis.append(emoji_vocab[line])
-            elif line.split()[0].lower() in word_vocab:
+            elif len(line.split()) == 2 and line.split()[0].lower() in word_vocab and line.split()[1] in emoji_vocab:
                 sequence_words.append(word_vocab[line.split()[0].lower()])
-                sequence_emojis.append(emoji_vocab[line.split()[1]])
-            else:
-                sequence_words.append(word_vocab['UNK'])
                 sequence_emojis.append(emoji_vocab[line.split()[1]])
 
     df = pd.DataFrame(sequences, columns=['sequence_words', 'sequence_emojis'])

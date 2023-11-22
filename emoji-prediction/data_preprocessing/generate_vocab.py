@@ -6,7 +6,7 @@ vocab_path = data_path / 'vocab.txt'
 train_path = data_path / 'train.txt'
 emojis_path = data_path / 'emojis.txt'
 
-word_vocab = {'UNK': 0, '<START>': 1, '<END>': 2, ' ': 3, '🏾': 4}
+word_vocab = {}  # {'UNK': 0, '<START>': 1, '<END>': 2, ' ': 3, '🏾': 4}
 with open(embedding_path, 'r', encoding='utf-8') as file:
     for line in file:
         values = line.split()
