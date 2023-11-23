@@ -3,8 +3,8 @@ from pathlib import Path
 import matplotlib
 import matplotlib.pyplot as plt
 from parse_to_df import parse_to_df
-matplotlib.use('TkAgg')  # Use the TkAgg backend (replace with an appropriate backend for your system)
 
+matplotlib.use('TkAgg')  # Use the TkAgg backend (replace with an appropriate backend for your system)
 
 data_path = Path(__file__).parent.parent / 'data'
 file_name = 'train.txt'
@@ -12,6 +12,14 @@ emoji_path = data_path / 'emojis.txt'
 vocab_path = data_path / 'vocab.txt'
 df = parse_to_df(data_path=data_path, size_to_read=5 * 1024 ** 2)
 print(df.dtypes)
+all_equal_length = True
+for i, row in df.iterrows():
+    if len(row['sequence_words']) != len(row['sequence_emojis']):
+        all_equal_length = False
+        print(f'Row {i} has unequal length')
+        print(row['sequence_words'])
+        print(row['sequence_emojis'])
+
 df.to_csv(data_path / 'train.csv')
 
 
@@ -69,3 +77,8 @@ plt.xlabel('Word')
 plt.ylabel('Count')
 plt.title('Word before emoji count')
 plt.savefig('word_counts.png')
+
+top_emojis = emoji_counts.index[1:1 + 5]
+top_filtered_df = (df_words_before_emoji[df_words_before_emoji['emoji'].isin([emoji_vocab[top] for top in top_emojis])]
+                   .reset_index(drop=True))
+
