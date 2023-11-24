@@ -4,6 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from parse_to_df import parse_to_df
 from generate_embeddings import embed_words
+from dim_reduction import pca
 
 matplotlib.use('TkAgg')
 # Use the TkAgg backend (replace with appropriate backend for your system)
@@ -109,3 +110,4 @@ embedded_df = embed_words(top_filtered_df, index_to_word, word_to_embedding)
 # save to csv
 embedded_df.to_csv(data_path / 'embedded.csv')
 print(embedded_df.head())
+pca_df = pca(embedded_df)
