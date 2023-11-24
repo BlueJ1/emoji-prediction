@@ -1,34 +1,33 @@
 from sklearn.decomposition import PCA
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.metrics import silhouette_score
+from sklearn.manifold import TSNE
 
 
 def pca(df):
     df.columns = df.columns.astype(str)
-
     print('Performing PCA...')
     pca_object = PCA(n_components=3)
     reduced_dim_df = pca_object.fit_transform(df)
-    plot = plot1(reduced_dim_df, df)
-
-    # save plot to png file
-    plot.savefig('pca.png')
+    plot1(reduced_dim_df, df, name='PCA_Plot')
+    # get silhouette score
+    score_pca = silhouette_score(reduced_dim_df, df['emoji'])
+    print('Silhouette score: ' + str(score_pca))
 
     return reduced_dim_df
 
 
-def plot1(reduced_dim_df, df):
+def plot1(reduced_dim_df, df, name="Plot"):
     # plot such that each emoji is a different color
     fig = plt.figure(figsize=(20, 10))
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(reduced_dim_df[:, 0], reduced_dim_df[:, 1],
                reduced_dim_df[:, 2], c=df['emoji'])
-    ax.set_xlabel('X Label')
-    ax.set_ylabel('Y Label')
-    ax.set_zlabel('Z Label')
+    # name the plot
+    ax.set_title(name)
+    plt.savefig(name + '.png')
     plt.show()
-
-    return plt
 
 
 def plot2(reduced_dim_df, df):
@@ -55,3 +54,14 @@ def plot2(reduced_dim_df, df):
 
     # Show the plot
     plt.show()
+
+
+def t_sne(df):
+    print('Performing t-SNE...')
+    tsne = TSNE(n_components=3, verbose=1, perplexity=500, n_iter=300)
+    tsne_results = tsne.fit_transform(df)
+    plot1(tsne_results, df, name='t-SNE_Plot')
+    # get silhouette score
+    score_tsne = silhouette_score(tsne_results, df['emoji'])
+    print('Silhouette score: ' + str(score_tsne))
+    return tsne_results
