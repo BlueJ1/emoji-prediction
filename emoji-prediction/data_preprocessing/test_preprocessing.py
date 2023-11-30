@@ -3,14 +3,14 @@ from pathlib import Path
 import matplotlib
 import matplotlib.pyplot as plt
 from parse_to_df import parse_to_df
-
 matplotlib.use('TkAgg')  # Use the TkAgg backend (replace with an appropriate backend for your system)
+
 
 data_path = Path(__file__).parent.parent / 'data'
 file_name = 'train.txt'
 emoji_path = data_path / 'emojis.txt'
 vocab_path = data_path / 'vocab.txt'
-df = parse_to_df(data_path=data_path, size_to_read=1000 * 1024 ** 2)
+df = parse_to_df(data_path=data_path, size_to_read=5 * 1024 ** 2)
 print(df.dtypes)
 all_equal_length = True
 for i, row in df.iterrows():
