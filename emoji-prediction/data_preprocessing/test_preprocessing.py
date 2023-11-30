@@ -9,6 +9,7 @@ from dim_reduction import pca, t_sne
 matplotlib.use('TkAgg')
 # Use the TkAgg backend (replace with appropriate backend for your system)
 
+
 data_path = Path(__file__).parent.parent / 'data'
 file_name = 'train.txt'
 emoji_path = data_path / 'emojis.txt'
@@ -82,7 +83,7 @@ plt.savefig('emoji_counts.png')
 
 # plot word freq
 plt.figure(figsize=(20, 10))
-plt.bar(word_counts.index[1:51], word_counts.values[1:51])
+plt.bar(word_counts.index[:50], word_counts.values[:50])
 plt.xticks(rotation=90)
 plt.xlabel('Word')
 plt.ylabel('Count')
