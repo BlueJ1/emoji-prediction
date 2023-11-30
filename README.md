@@ -1,5 +1,18 @@
 # ML Project Template 🛠️
 
+## TODO
+
+- [ ] Calculate the percentage of the most frequently occurring class (random baseline) __Lennert__
+- [ ] Build 1-gram model __Lennert__
+- [ ] Preprocessing for n-gram model and MLP (2 words before and after the emoji) __Wojtek__
+- [ ] Create a dataframe with the _sum_ of the embeddings of 4 words and a one-hot encoded target emoji __Wojtek__
+- [ ] Create a dataframe with the _concatenation_ of the embeddings of 4 words and a one-hot encoded target emoji  __Wojtek__
+- [ ] Address the class imbalance (data augmentation) __Lennert__
+- [ ] Build n-gram __Lennert__
+- [ ] Build MLP __Laura__
+- [ ] Evaluate the models (at least balanced accuracy, F1, confusion matrix?) __Lennert__, __Laura__
+- [ ] Overleaf document outlining what we have done so far and what we are planning to do/improve + include contributions __everyone__
+
 ## Data
 We use the train.txt and test.txt files from
 [Kaggle](https://www.kaggle.com/datasets/rexhaif/emojifydata-en?select=train.txt) as our train and test data.
