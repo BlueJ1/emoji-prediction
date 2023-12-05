@@ -37,7 +37,7 @@ def generate_dataframes(size_in_MB):
     vocab_path = data_path / 'vocab.txt'
     embedding_path = data_path / 'glove.6B.50d.txt'
 
-    df = parse_to_df(data_path=data_path, size_to_read=int(size_in_MB * 1024 ** 2))
+    df = parse_to_df(data_path=data_path, file_path=data_path / file_name, size_to_read=int(size_in_MB * 1024 ** 2))
     df.to_csv(data_path / 'train.csv')
 
     flattened_df = pd.DataFrame(
@@ -45,7 +45,7 @@ def generate_dataframes(size_in_MB):
          'emoji': df['sequence_emojis'].apply(pd.Series).stack()})
     df_word_before_emoji = flattened_df[flattened_df['emoji'] != 0]
 
-    df_word_before_emoji.to_pickle(data_path / f'word_before_emoji_index_{size_in_MB}MB')
+    df_word_before_emoji.to_pickle(data_path / f'word_before_emoji_index.pkl')
 
     with open(vocab_path, 'r', encoding='utf-8') as f:
         word_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
@@ -66,7 +66,7 @@ def generate_dataframes(size_in_MB):
     new_df = df.apply(lambda x: keep_words_surrounding_emoji(x, 2, 2, None, None, None, False), axis=1)
     df_words_around_emoji = new_df[new_df.astype(bool).any(axis=1)].apply(
         lambda col: col.explode() if col.dtype == 'O' else col)
-    df_words_around_emoji.to_pickle(data_path / f'words_around_emoji_index_{size_in_MB}MB')
+    df_words_around_emoji.to_pickle(data_path / f'words_around_emoji_index.pkl')
 
     embedded_df = df.apply(
         lambda x: keep_words_surrounding_emoji(x, 2, 2, index_to_word, word_to_embedding, embedding.shape, True),
@@ -83,8 +83,9 @@ def generate_dataframes(size_in_MB):
     concatenation_of_embedding_df = pd.get_dummies(embedded_df.apply(concatenate_first_col, axis=1), columns=['emoji'],
                                                    prefix=['Target_class'])
 
-    sum_of_embeddings_df.to_pickle(data_path / f'word_around_emoji_sum_of_embeddings_{size_in_MB}MB')
-    concatenation_of_embedding_df.to_pickle(data_path / f'word_around_emoji_concatenation_of_embeddings_{size_in_MB}MB')
+    sum_of_embeddings_df.to_pickle(data_path / f'word_around_emoji_sum_of_embeddings.pkl')
+    concatenation_of_embedding_df.to_pickle(data_path /
+                                            f'word_around_emoji_concatenation_of_embeddings.pkl')
 
 
 generate_dataframes(5)
