@@ -59,7 +59,7 @@ def generate_dataframes(size_in_MB):
         for line in f.readlines():
             values = line.split()
             word = values[0]
-            embedding = np.array(values[1:], dtype=float)
+            embedding = np.array([float(v) for v in values[1:]], dtype=float)
             word_to_embedding[word] = embedding
 
         # For some reason this function doesn't work on vectors of words
@@ -91,5 +91,5 @@ def generate_dataframes(size_in_MB):
 
 if __name__ == '__main__':
     t = time()
-    generate_dataframes(2000)
+    generate_dataframes(2)
     print(f'Time taken: {time() - t}')
