@@ -66,7 +66,8 @@ def generate_dataframes(size_in_MB):
         # vectorized_word_to_glove = np.vectorize(lambda x: word_to_embedding.get(x, np.zeros(embedding.shape).tolist()))
 
     new_df = df.apply(lambda x: keep_words_surrounding_emoji(x, 2, 2, None, None, None, False), axis=1)
-    df_words_around_emoji = new_df.explode("words").dropna()
+    df_words_around_emoji = new_df[new_df.astype(bool).any(axis=1)].apply(
+        lambda col: col.explode() if col.dtype == 'O' else col)
     df_words_around_emoji.to_pickle(data_path / f'words_around_emoji_index.pkl')
 
     embedded_df = df.apply(
@@ -91,5 +92,5 @@ def generate_dataframes(size_in_MB):
 
 if __name__ == '__main__':
     t = time()
-    generate_dataframes(2)
+    generate_dataframes(5)
     print(f'Time taken: {time() - t}')

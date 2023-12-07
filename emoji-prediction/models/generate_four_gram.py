@@ -4,6 +4,7 @@
 from pathlib import Path
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 
 from four_gram_class import FourGram
 
@@ -21,12 +22,16 @@ with open(emoji_path, 'r', encoding='utf-8') as f:
     emoji_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 
 df = pd.read_pickle(data_path / file_name)
+print(df.head())
+
+print(df.info())
 
 # unique 4-grams in data
 unique_4_grams = set(df['words'].apply(lambda x: FourGram(x)))
+print(f'{len(unique_4_grams)} unique 4-grams in data')
 
 four_gram_dict = {}
-for index, row in df.iterrows():
+for index, row in tqdm(df.iterrows()):
     words, emoji = FourGram(row['words']), row['emoji']
     if words in four_gram_dict:
         four_gram_dict[words][emoji] += 1
@@ -35,7 +40,7 @@ for index, row in df.iterrows():
         four_gram_dict[words][emoji] += 1
 
 # select argmax for each row
-for key, value in four_gram_dict.items():
+for key, value in tqdm(four_gram_dict.items()):
     four_gram_dict[key] = np.argmax(value)
 
 

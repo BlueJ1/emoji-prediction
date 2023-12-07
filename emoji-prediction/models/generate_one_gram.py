@@ -4,10 +4,11 @@
 import pandas as pd
 import numpy as np
 from pathlib import Path
+from tqdm import tqdm
 
 data_path = Path(__file__).parent.parent / 'data'
 model_path = Path(__file__).parent.parent / 'models'
-file_name = 'word_before_emoji_index.pkl'
+file_name = 'word_before_emoji_index_big.pkl'
 vocab_path = data_path / 'vocab.txt'
 emoji_path = data_path / 'emojis.txt'
 
@@ -19,9 +20,11 @@ with open(emoji_path, 'r', encoding='utf-8') as f:
 
 df = pd.read_pickle(data_path / file_name)
 
+print(df.info())
+
 one_gram_matrix = np.zeros((len(word_vocab), len(emoji_vocab)))
 
-for index, row in df.iterrows():
+for index, row in tqdm(df.iterrows()):
     word, emoji = row['word'], row['emoji']
     one_gram_matrix[word, emoji] += 1
 
