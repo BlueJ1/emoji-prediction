@@ -56,7 +56,7 @@ def build_model(dataframe):
     # k-fold cross validation
     k = 5
     num_val_samples = len(X_train) // k
-    num_epochs = 100
+    num_epochs = 10
     all_scores = []
     for i in range(k):
         print('processing fold #', i)
@@ -74,7 +74,7 @@ def build_model(dataframe):
             axis=0)
         # Train the model (in silent mode, verbose=0)
         model.fit(partial_train_data, partial_train_targets,
-                  epochs=num_epochs, batch_size=1, verbose=0)
+                  epochs=num_epochs, batch_size=12, verbose=0)
         # Evaluate the model on the validation data
         val_binary_crossentropy, val_accuracy = model.evaluate(
             val_data, val_targets, verbose=0)
