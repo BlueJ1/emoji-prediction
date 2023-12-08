@@ -50,8 +50,36 @@ def build_model(dataframe):
         optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
     # Train the model
-    model.fit(
-        X_train, y_train, epochs=100, batch_size=32, validation_split=0.2)
+    # model.fit(
+    #    X_train, y_train, epochs=100, batch_size=32, validation_split=0.2)
+
+    # k-fold cross validation
+    k = 5
+    num_val_samples = len(X_train) // k
+    num_epochs = 100
+    all_scores = []
+    for i in range(k):
+        print('processing fold #', i)
+        # Prepare the validation data: data from partition # k
+        val_data = X_train[i * num_val_samples: (i + 1) * num_val_samples]
+        val_targets = y_train[i * num_val_samples: (i + 1) * num_val_samples]
+        # Prepare the training data: data from all other partitions
+        partial_train_data = np.concatenate(
+            [X_train[:i * num_val_samples],
+             X_train[(i + 1) * num_val_samples:]],
+            axis=0)
+        partial_train_targets = np.concatenate(
+            [y_train[:i * num_val_samples],
+             y_train[(i + 1) * num_val_samples:]],
+            axis=0)
+        # Train the model (in silent mode, verbose=0)
+        model.fit(partial_train_data, partial_train_targets,
+                  epochs=num_epochs, batch_size=1, verbose=0)
+        # Evaluate the model on the validation data
+        val_binary_crossentropy, val_accuracy = model.evaluate(
+            val_data, val_targets, verbose=0)
+        all_scores.append(val_accuracy)
+    print(all_scores)
 
     # Get F1 score and balanced accuracy score
     y_pred = model.predict(X_test)
