@@ -7,8 +7,6 @@ from generate_embeddings import embed_words
 from dim_reduction import pca, t_sne
 
 matplotlib.use('TkAgg')
-# Use the TkAgg backend (replace with appropriate backend for your system)
-
 
 data_path = Path(__file__).parent.parent / 'data'
 file_name = 'train.txt'
