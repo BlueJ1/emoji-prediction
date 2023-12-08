@@ -62,7 +62,7 @@ def generate_train_dataframe(df, word_to_embedding, index_to_word, embedding_sha
          'emoji': df['sequence_emojis'].apply(pd.Series).stack()})
 
     df_word_before_emoji = flattened_df[flattened_df['emoji'] != 0]
-    df_word_before_emoji.to_pickle(data_path / f'word_before_emoji_index')
+    df_word_before_emoji.to_pickle(data_path / f'word_before_emoji_index.pkl')
 
     words_around_emoji_data_ix = []
     words_around_emoji_data_emb = []
@@ -75,17 +75,17 @@ def generate_train_dataframe(df, word_to_embedding, index_to_word, embedding_sha
 
 
     df_words_around_emoji = pd.DataFrame(words_around_emoji_data_ix, columns=['words', 'emoji'])
-    df_words_around_emoji.to_pickle(data_path / f'words_around_emoji_index')
+    df_words_around_emoji.to_pickle(data_path / f'words_around_emoji_index.pkl')
 
     embedded_df = pd.DataFrame(words_around_emoji_data_emb, columns=['words', 'emoji'])
 
     sum_of_embeddings_df = pd.get_dummies(embedded_df.apply(sum_first_col, axis=1), columns=['emoji'],
                                           prefix=['Target_class'])
-    sum_of_embeddings_df.to_pickle(data_path / f'word_around_emoji_sum_of_embeddings')
+    sum_of_embeddings_df.to_pickle(data_path / f'word_around_emoji_sum_of_embeddings.pkl')
 
     concatenation_of_embedding_df = pd.get_dummies(embedded_df.apply(concatenate_first_col, axis=1), columns=['emoji'],
                                                    prefix=['Target_class'])
-    concatenation_of_embedding_df.to_pickle(data_path / f'word_around_emoji_concatenation_of_embeddings')
+    concatenation_of_embedding_df.to_pickle(data_path / f'word_around_emoji_concatenation_of_embeddings.pkl')
 
 
 if __name__ == '__main__':
