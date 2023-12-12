@@ -11,9 +11,9 @@ import keras
 def build_model(dataframe):
     # Split the DataFrame into features (X) and labels (y)
     # X is last 50 columns, y is first 49
-    x = result_df.iloc[:, 48:].values
+    x = dataframe.iloc[:, 48:].values
     # print(X)
-    y = result_df.iloc[:, :48].values
+    y = dataframe.iloc[:, :48].values
     # print(y)
     X = pd.DataFrame(x)
     y = pd.DataFrame(y)
@@ -116,24 +116,26 @@ def expand_array(row):
     return pd.Series(row['words'])
 
 
-data_path = Path(__file__).parent.parent / 'data'
-model_path = Path(__file__).parent.parent / 'models'
-file_name = 'word_around_emoji_sum_of_embeddings.pkl'
+if __name__ == "__main__":
 
-df = pd.read_pickle(data_path / file_name)
-# print column names
-print(df.columns)
-check_for_multiple_emojis(df)
+    data_path = Path(__file__).parent.parent / 'data'
+    model_path = Path(__file__).parent.parent / 'models'
+    file_name = 'word_around_emoji_sum_of_embeddings.pkl'
 
-# Apply the function to the DataFrame
-expanded_df = df.apply(expand_array, axis=1)
-# Concatenate the expanded columns with the original DataFrame
-result_df = pd.concat([df, expanded_df], axis=1)
-# Drop the original array_column
-result_df = result_df.drop('words', axis=1)
-# Rename the new columns if needed
-# result_df.columns = [f'value_{i+1}' for i in range(result_df.shape[1])]
-print(result_df)
-print(result_df.columns)
+    df = pd.read_pickle(data_path / file_name)
+    # print column names
+    print(df.columns)
+    check_for_multiple_emojis(df)
 
-build_model(result_df)
+    # Apply the function to the DataFrame
+    expanded_df = df.apply(expand_array, axis=1)
+    # Concatenate the expanded columns with the original DataFrame
+    result_df = pd.concat([df, expanded_df], axis=1)
+    # Drop the original array_column
+    result_df = result_df.drop('words', axis=1)
+    # Rename the new columns if needed
+    # result_df.columns = [f'value_{i+1}' for i in range(result_df.shape[1])]
+    print(result_df)
+    print(result_df.columns)
+
+    build_model(result_df)
