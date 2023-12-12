@@ -1,141 +1,185 @@
+from multiprocessing import Process, Manager
 from pathlib import Path
-import pandas as pd
-import numpy as np
-from keras import layers
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import balanced_accuracy_score, f1_score
+
 import keras
+import pandas as pd
+import tensorflow as tf
+from keras import layers
+from keras.metrics import F1Score
+from keras.optimizers.legacy import Adam
+from sklearn.model_selection import KFold
+from sklearn.preprocessing import StandardScaler
+from tensorflow.keras.callbacks import Callback
+from tqdm import tqdm
+import numpy as np
 
 
-def build_model(dataframe):
-    # Split the DataFrame into features (X) and labels (y)
-    # X is last 50 columns, y is first 49
-    x = dataframe.iloc[:, 48:].values
-    # print(X)
-    y = dataframe.iloc[:, :48].values
-    # print(y)
-    X = pd.DataFrame(x)
-    y = pd.DataFrame(y)
-    # print("Length of X: " + str(len(X.columns)) + " and length of y: " +
-    # str(len(y.columns)) + " and total: " + str(len(result_df.columns)))
-    # make true/false to 1/0 in y
-    y = y.astype(int)
-    print(y)
+def setup_gpu(gpu_id):
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if gpus:
+        try:
+            tf.config.experimental.set_visible_devices(gpus[gpu_id], 'GPU')
+            tf.config.experimental.set_memory_growth(gpus[gpu_id], True)
+        except RuntimeError as e:
+            print(e)
 
-    # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42)
 
-    # Standardize the features
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
+class TqdmMetricsProgressBarCallback(Callback):
+    def __init__(self, total_epochs, validation_data=None, eval_interval=10):
+        super().__init__()
+        self.total_epochs = total_epochs
+        self.progress_bar = None
+        self.validation_data = validation_data
+        self.eval_interval = eval_interval
+        self.val_loss = 0
+        self.val_acc = 0
+        self.val_f1_score = 0
+
+    def on_train_begin(self, logs=None):
+        self.progress_bar = tqdm(total=self.total_epochs, unit='epoch', bar_format='{l_bar}{bar}{r_bar}')
+
+    def on_epoch_end(self, epoch, logs=None):
+        loss = logs.get('loss')
+        acc = logs.get('accuracy', 0) * 100  # Convert to percentage
+        f1_score = logs.get('f1_score', 0)  # F1 score
+
+        if self.validation_data and (epoch + 1) % self.eval_interval == 0:
+            self.val_loss, self.val_acc, self.val_f1_score = (
+                self.model.evaluate(self.validation_data[0], self.validation_data[1], verbose=0, batch_size=4096))
+        self.progress_bar.set_postfix_str(f"Loss: {loss:.2f}, Accuracy: {acc:.2f}%, F1 Score: {f1_score:.2f}, "
+                                          f"Val Loss: {self.val_loss:.2f}, Val Accuracy: {self.val_acc:.2f}%, "
+                                          f"Val F1 Score: {self.val_f1_score:.2f}")
+        self.progress_bar.update(1)
+
+    def on_train_end(self, logs=None):
+        self.progress_bar.close()
+
+
+def train_fold(fold_number, fold_data, results_dict):
+    gpu_id = fold_data['gpu_id']
+    # setup_gpu(gpu_id)
+
+    X = fold_data['X']
+    y = fold_data['y']
+    train_idxs = fold_data['train_idxs']
+    test_idxs = fold_data['test_idxs']
+    num_epochs = fold_data['num_epochs']
 
     # Build the MLP model
     model = keras.Sequential([
         layers.Input(shape=(50,)),  # Assuming 50 features
         layers.Dense(128, activation='relu'),
-        layers.Dropout(0.5),  # Adding dropout for regularization
-        layers.Dense(64, activation='relu'),
-        layers.Dropout(0.5),  # Adding dropout for regularization
-        layers.Dense(32, activation='relu'),  # fewer units
-        layers.Dropout(0.5),  # Adding dropout for regularization
-        layers.Dense(48, activation='sigmoid')
-        # Assuming 48 emoji classes
+        layers.Dropout(0.1),  # Adding dropout for regularization
+        layers.Dense(128, activation='relu'),
+        layers.Dropout(0.1),  # Adding dropout for regularization
+        layers.Dense(128, activation='relu'),
+        layers.Dropout(0.1),  # Adding dropout for regularization
+        layers.Dense(128, activation='relu'),  # fewer units
+        layers.Dropout(0.1),  # Adding dropout for regularization
+        layers.Dense(49, activation='softmax')  # Assuming 49 emoji classes
     ])
 
     # Compile the model
     model.compile(
-        optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+        optimizer=Adam(learning_rate=1e-5),
+        loss='CategoricalCrossentropy',
+        metrics=[F1Score(average="weighted", dtype=tf.float32), "accuracy"])
 
-    # Train the model
-    # model.fit(
-    #    X_train, y_train, epochs=100, batch_size=32, validation_split=0.2)
+    # Standardize the features
+    scaler = StandardScaler()
+    # print(train_idxs.shape)
+    X_train = scaler.fit_transform(tf.gather(X, train_idxs))
+    y_train = tf.gather(y, train_idxs)
+    X_test = scaler.transform(tf.gather(X, test_idxs))
+    y_test = tf.gather(y, test_idxs)
 
-    # k-fold cross validation
-    k = 5
-    num_val_samples = len(X_train) // k
-    num_epochs = 10
-    all_scores = []
-    for i in range(k):
-        print('processing fold #', i)
-        # Prepare the validation data: data from partition # k
-        val_data = X_train[i * num_val_samples: (i + 1) * num_val_samples]
-        val_targets = y_train[i * num_val_samples: (i + 1) * num_val_samples]
-        # Prepare the training data: data from all other partitions
-        partial_train_data = np.concatenate(
-            [X_train[:i * num_val_samples],
-             X_train[(i + 1) * num_val_samples:]],
-            axis=0)
-        partial_train_targets = np.concatenate(
-            [y_train[:i * num_val_samples],
-             y_train[(i + 1) * num_val_samples:]],
-            axis=0)
-        # Train the model (in silent mode, verbose=0)
-        model.fit(partial_train_data, partial_train_targets,
-                  epochs=num_epochs, batch_size=12, verbose=0)
-        # Evaluate the model on the validation data
-        val_binary_crossentropy, val_accuracy = model.evaluate(
-            val_data, val_targets, verbose=0)
-        all_scores.append(val_accuracy)
-    print(all_scores)
+    # Train the model (in silent mode, verbose=0)
+    tqdm_callback = TqdmMetricsProgressBarCallback(num_epochs, validation_data=(X_test, y_test),
+                                                   eval_interval=10)
+    history = model.fit(X_train, y_train,
+                        epochs=num_epochs, batch_size=128, verbose=0,
+                        callbacks=[tqdm_callback])
+    # Evaluate the model on the validation data
+    evaluation = model.evaluate(
+        X_test, y_test, verbose=1, batch_size=4096)
 
-    # Get F1 score and balanced accuracy score
-    y_pred = model.predict(X_test)
-    y_pred = np.argmax(y_pred, axis=1)
-    y_test = np.argmax(y_test, axis=1)
-    f1_score_value = f1_score(y_test, y_pred, average='micro')
-    balanced_accuracy_score_value = balanced_accuracy_score(y_test, y_pred)
-    print(f"F1 score: {f1_score_value}")
-    print(f"Balanced accuracy score: {balanced_accuracy_score_value}")
+    results_dict[fold_number] = evaluation
 
 
-def check_for_multiple_emojis(to_check):
-    for index, row in to_check.iterrows():
-        if len(row['words']) != 50:
-            print("The row " + str(index) + " has a word array of length "
-                  + str(len(row['words'])))
-
-    classes_df = to_check.drop(columns=['words'])
-    # iterate through all rows
-    for index, row in classes_df.iterrows():
-        # iterate through all columns
-        for col in row:
-            taken = -1
-            if col:
-                if taken != -1:
-                    print("The row " + str(index) +
-                          " has more than one emoji, namely "
-                          + str(col) + " and " + str(taken))
-                else:
-                    taken = col
-
-
-def expand_array(row):
-    return pd.Series(row['words'])
-
-
-if __name__ == "__main__":
-
+if __name__ == '__main__':
     data_path = Path(__file__).parent.parent / 'data'
     model_path = Path(__file__).parent.parent / 'models'
     file_name = 'word_around_emoji_sum_of_embeddings.pkl'
 
     df = pd.read_pickle(data_path / file_name)
-    # print column names
-    print(df.columns)
-    check_for_multiple_emojis(df)
 
-    # Apply the function to the DataFrame
+
+    # Expand the words embedding column
+    def expand_array(row):
+        return pd.Series(row['words'])
+
+
     expanded_df = df.apply(expand_array, axis=1)
+
     # Concatenate the expanded columns with the original DataFrame
     result_df = pd.concat([df, expanded_df], axis=1)
     # Drop the original array_column
     result_df = result_df.drop('words', axis=1)
-    # Rename the new columns if needed
-    # result_df.columns = [f'value_{i+1}' for i in range(result_df.shape[1])]
-    print(result_df)
-    print(result_df.columns)
+    # print(result_df.head())
 
-    build_model(result_df)
+    X = result_df.iloc[:, 49:].values
+    y = result_df.iloc[:, :49].values
+
+    X = tf.cast(X, tf.float32)
+    y = tf.cast(y, tf.float32)
+
+    # k-fold cross validation
+    k = 5
+    kfold = KFold(n_splits=k, shuffle=True)
+    num_epochs = 1000
+    all_scores = []
+
+    parallel = True
+
+    if parallel:
+        with Manager() as manager:
+            results_dict = manager.dict()
+            processes = []
+
+            for i, (train_idxs, test_idxs) in enumerate(kfold.split(X, y)):
+                fold_data = {
+                    'gpu_id': i % len(tf.config.experimental.list_physical_devices('GPU')),  # assuming num_gpus is the
+                    # number of GPUs you have
+                    'train_idxs': train_idxs,
+                    'test_idxs': test_idxs,
+                    'X': X,
+                    'y': y,
+                    'num_epochs': num_epochs
+                }
+                p = Process(target=train_fold, args=(i, fold_data, results_dict))
+                p.start()
+                processes.append(p)
+
+            for p in processes:
+                p.join()
+
+            results_dict = dict(results_dict)
+    else:
+        for i, (train_idxs, test_idxs) in enumerate(kfold.split(X, y)):
+            results_dict = {}
+            fold_data = {
+                'gpu_id': i % len(tf.config.experimental.list_physical_devices('GPU')),  # assuming num_gpus is the
+                # number of GPUs you have
+                'train_idxs': train_idxs,
+                'test_idxs': test_idxs,
+                'X': X,
+                'y': y,
+                'num_epochs': num_epochs
+            }
+            train_fold(i, fold_data, results_dict)
+
+    for val in results_dict.values():
+        all_scores.append(val)
+
+    all_scores = np.array(all_scores)
+    print(np.average(all_scores[:, :4], axis=0))
