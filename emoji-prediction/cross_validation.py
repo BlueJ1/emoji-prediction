@@ -1,7 +1,7 @@
-from models.generate_one_gram import generate_one_gram
-from models.generate_four_gram import generate_four_gram
-from models.one_gram import predict_one_gram
-from models.four_gram import predict_four_gram
+from models.one_gram import one_gram
+from models.generate_four_gram import four_gram
+from models.one_gram import one_gram
+from models.four_gram import four_gram
 
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import f1_score

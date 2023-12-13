@@ -57,7 +57,8 @@ class TqdmMetricsProgressBarCallback(Callback):
 
 def train_fold(fold_number, fold_data, results_dict):
     gpu_id = fold_data['gpu_id']
-    # setup_gpu(gpu_id)
+    if gpu_id >= 0:
+        setup_gpu(gpu_id)
 
     X = fold_data['X']
     y = fold_data['y']
@@ -145,11 +146,11 @@ if __name__ == '__main__':
         with Manager() as manager:
             results_dict = manager.dict()
             processes = []
+            num_gpus = len(tf.config.experimental.list_physical_devices('GPU'))
 
             for i, (train_idxs, test_idxs) in enumerate(kfold.split(X, y)):
                 fold_data = {
-                    'gpu_id': i % len(tf.config.experimental.list_physical_devices('GPU')),  # assuming num_gpus is the
-                    # number of GPUs you have
+                    'gpu_id': i % num_gpus if num_gpus > 0 else -1,
                     'train_idxs': train_idxs,
                     'test_idxs': test_idxs,
                     'X': X,
