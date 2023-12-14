@@ -92,5 +92,5 @@ def generate_dataframes(size_in_MB):
 
 if __name__ == '__main__':
     t = time()
-    generate_dataframes(5)
+    generate_dataframes(10)
     print(f'Time taken: {time() - t}')

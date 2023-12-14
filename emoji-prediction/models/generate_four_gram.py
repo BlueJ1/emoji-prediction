@@ -15,9 +15,6 @@ file_name = 'words_around_emoji_index.pkl'
 vocab_path = data_path / 'vocab.txt'
 emoji_path = data_path / 'emojis.txt'
 
-with open(vocab_path, 'r', encoding='utf-8') as f:
-    word_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
-
 with open(emoji_path, 'r', encoding='utf-8') as f:
     emoji_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 

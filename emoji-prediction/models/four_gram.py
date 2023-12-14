@@ -1,21 +1,46 @@
-# this file is used to generate a 4-gram language model for emoji prediction
-# the given words are the two words before and after the emoji
-# it is generated from the words_around_emoji_index.pkl file
-
 import numpy as np
 from pathlib import Path
-from baseline import baseline_predict
+from tqdm import tqdm
+
+from models.four_gram_class import FourGram
 
 
-def four_gram_predict(wordss):
+def four_gram_data(df):
+    X = df['words'].apply(lambda x: FourGram(x)).values
+    y = df['emoji'].apply(int).values
+    return X, y
+
+
+def four_gram(X_train, y_train, X_test, y_test, results, _):
     data_path = Path(__file__).parent.parent / 'data'
-    dict_file = data_path / 'four_gram_dict.npy'
+    emoji_path = data_path / 'emojis.txt'
 
-    four_gram_dict = np.load(dict_file)
+    with open(emoji_path, 'r', encoding='utf-8') as f:
+        emoji_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
+
+    unique_4_grams = set(X_train)
+    print(f'{len(unique_4_grams)} unique 4-grams in data')
+
+    unique_emojis, counts = np.unique(y_train, return_counts=True)
+    most_common_emoji = unique_emojis[np.argmax(counts)]
+
+    four_gram_dict = {}
+    for words, emoji in tqdm(zip(X_train, y_train)):
+        if words in four_gram_dict:
+            four_gram_dict[words][emoji] += 1
+        else:
+            four_gram_dict[words] = np.zeros(len(emoji_vocab))
+            four_gram_dict[words][emoji] += 1
+
+    # select argmax for each row
+    for key, value in tqdm(four_gram_dict.items()):
+        four_gram_dict[key] = np.argmax(value)
 
     predictions = []
-    for words in wordss:
+    for words in X_test:
         if words not in four_gram_dict:
-            predictions.append(baseline_predict(words[1])[0])
-        predictions.append(four_gram_dict[words])
-    return predictions
+            predictions.append(most_common_emoji)
+        else:
+            predictions.append(four_gram_dict[words])
+
+    results.append(np.mean(predictions == y_test))

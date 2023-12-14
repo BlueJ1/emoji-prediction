@@ -7,7 +7,7 @@ import tensorflow as tf
 from keras import layers
 from keras.metrics import F1Score
 from keras.optimizers.legacy import Adam
-from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.callbacks import Callback
 from tqdm import tqdm
@@ -114,11 +114,9 @@ if __name__ == '__main__':
 
     df = pd.read_pickle(data_path / file_name)
 
-
     # Expand the words embedding column
     def expand_array(row):
         return pd.Series(row['words'])
-
 
     expanded_df = df.apply(expand_array, axis=1)
 
@@ -136,7 +134,7 @@ if __name__ == '__main__':
 
     # k-fold cross validation
     k = 5
-    kfold = KFold(n_splits=k, shuffle=True)
+    kfold = StratifiedKFold(n_splits=k, shuffle=True)
     num_epochs = 1000
     all_scores = []
 
@@ -148,7 +146,7 @@ if __name__ == '__main__':
             processes = []
             num_gpus = len(tf.config.experimental.list_physical_devices('GPU'))
 
-            for i, (train_idxs, test_idxs) in enumerate(kfold.split(X, y)):
+            for i, (train_idxs, test_idxs) in enumerate(kfold.split(X, np.argmax(y, axis=1))):
                 fold_data = {
                     'gpu_id': i % num_gpus if num_gpus > 0 else -1,
                     'train_idxs': train_idxs,
@@ -166,7 +164,7 @@ if __name__ == '__main__':
 
             results_dict = dict(results_dict)
     else:
-        for i, (train_idxs, test_idxs) in enumerate(kfold.split(X, y)):
+        for i, (train_idxs, test_idxs) in enumerate(kfold.split(X, np.argmax(y, axis=1))):
             results_dict = {}
             fold_data = {
                 'gpu_id': i % len(tf.config.experimental.list_physical_devices('GPU')),  # assuming num_gpus is the

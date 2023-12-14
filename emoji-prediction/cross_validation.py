@@ -1,50 +1,60 @@
-from models.one_gram import one_gram
-from models.generate_four_gram import four_gram
-from models.one_gram import one_gram
-from models.four_gram import four_gram
-
-from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import f1_score
+import numpy as np
 import pandas as pd
+from sklearn.model_selection import StratifiedKFold
+from pickle import dump
+from pathlib import Path
+
+from models.four_gram import four_gram, four_gram_data
+from models.one_gram import one_gram, one_gram_data
+from models.baseline import baseline, baseline_data
 
 parameters = [
     dict(
-        model='one_gram',
-        data_file='word_before_emoji_index.pkl'
+        name='baseline',
+        data_preprocessing=baseline_data,
+        data_file='word_before_emoji_index.pkl',
+        evaluate=baseline,
+        hyperparameters=dict()
     ),
     dict(
-        model='four_gram',
-        data_file='words_around_emoji_index.pkl'
+        name='one_gram',
+        data_preprocessing=one_gram_data,
+        data_file='word_before_emoji_index.pkl',
+        evaluate=one_gram,
+        hyperparameters=dict()
+    ),
+    dict(
+        name='four_gram',
+        data_preprocessing=four_gram_data,
+        data_file='words_around_emoji_index.pkl',
+        evaluate=four_gram,
+        hyperparameters=dict()
     )]
 
-
+# k-fold cross validation
 k = 5
+results = {}
 
 for parameter_dict in parameters:
-    model = parameter_dict['model']
+    print(f'Running {parameter_dict["name"]} model')
+    data_dir = Path(__file__).parent / 'data'
     data_file = parameter_dict['data_file']
-    df = pd.read_pickle(data_file)
+    df = pd.read_pickle(data_dir / data_file)
 
-    X = df['X']
-    y = df['y']
-
-    if model == 'one_gram':
-        generate_model = generate_one_gram
-        predict_model = predict_one_gram
-    elif model == 'four_gram':
-        generate_model = generate_four_gram
-        predict_model = predict_four_gram
-    else:
-        raise ValueError('Model must be one of "one_gram" or "four_gram"')
+    X, y = parameter_dict['data_preprocessing'](df)
+    print(f'y shape: {y.shape}')
+    print(y.dtype)
 
     cv = StratifiedKFold(n_splits=k, shuffle=True, random_state=42)
+    results[parameter_dict['name']] = []
 
-    for i, (train_index, test_index) in enumerate(cv.split(X)):
+    for i, (train_index, test_index) in enumerate(cv.split(np.zeros(X.shape[0]), y)):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
 
-        # X_train, y_train = balance(X_train, y_train)
-        generate_model(X_train, y_train)
-        predictions = predict_model(X_test)
+        parameter_dict['evaluate'](X_train, y_train, X_test, y_test, results[parameter_dict['name']],
+                                   parameter_dict['hyperparameters'])
 
-        score = f1_score(y_test, predictions, average='weighted')
+# save results
+with open('results.pkl', 'wb') as f:
+    dump(results, f)
