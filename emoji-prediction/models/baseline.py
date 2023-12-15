@@ -2,6 +2,8 @@
 
 import numpy as np
 
+from models.evaluate_predictions import evaluate_predictions
+
 
 def baseline_data(df):
     X = df['word'].values
@@ -15,4 +17,4 @@ def baseline(X_train, y_train, X_test, y_test, results, _):
 
     predictions = np.repeat(most_common_emoji, len(X_test))
 
-    results.append(np.mean(predictions == y_test))
+    results.append(evaluate_predictions(predictions, y_test))

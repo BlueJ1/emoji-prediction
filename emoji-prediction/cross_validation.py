@@ -42,8 +42,6 @@ for parameter_dict in parameters:
     df = pd.read_pickle(data_dir / data_file)
 
     X, y = parameter_dict['data_preprocessing'](df)
-    print(f'y shape: {y.shape}')
-    print(y.dtype)
 
     cv = StratifiedKFold(n_splits=k, shuffle=True, random_state=42)
     results[parameter_dict['name']] = []
@@ -56,5 +54,5 @@ for parameter_dict in parameters:
                                    parameter_dict['hyperparameters'])
 
 # save results
-with open('results.pkl', 'wb') as f:
+with open('results.pkl', 'wb+') as f:
     dump(results, f)

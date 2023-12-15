@@ -2,10 +2,12 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 
+from models.evaluate_predictions import evaluate_predictions
+
 
 def one_gram_data(df):
     X = df['word'].values
-    y = df['emoji'].values
+    y = df['emoji'].apply(int).values
     return X, y
 
 
@@ -17,8 +19,6 @@ def one_gram(X_train, y_train, X_test, y_test, results, _):
         emoji_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 
     # create one gram model
-    unique_words = set(X_train)
-
     unique_emojis, counts = np.unique(y_train, return_counts=True)
     most_common_emoji = unique_emojis[np.argmax(counts)]
 
@@ -39,4 +39,4 @@ def one_gram(X_train, y_train, X_test, y_test, results, _):
         else:
             predictions.append(np.argmax(one_gram_dict[word]))
 
-    results.append(np.mean(predictions == y_test))
+    results.append(evaluate_predictions(predictions, y_test))

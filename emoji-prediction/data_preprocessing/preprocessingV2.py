@@ -93,7 +93,7 @@ def generate_train_dataframe(df, word_to_embedding, index_to_word, embedding_sha
 
 if __name__ == '__main__':
     t = time()
-    df = load_basic_dataframe(10)
+    df = load_basic_dataframe(100)
     ix_to_word, word_to_glove, shape = generate_dictionaries()
     generate_train_dataframe(df, word_to_glove, ix_to_word, shape)
     print(f'Time taken: {time() - t}')

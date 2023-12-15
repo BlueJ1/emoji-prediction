@@ -3,6 +3,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 from models.four_gram_class import FourGram
+from models.evaluate_predictions import evaluate_predictions
 
 
 def four_gram_data(df):
@@ -43,4 +44,4 @@ def four_gram(X_train, y_train, X_test, y_test, results, _):
         else:
             predictions.append(four_gram_dict[words])
 
-    results.append(np.mean(predictions == y_test))
+    results.append(evaluate_predictions(predictions, y_test))
