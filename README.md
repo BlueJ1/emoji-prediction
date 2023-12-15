@@ -2,16 +2,23 @@
 
 ## TODO
 
-- [ ] Calculate the percentage of the most frequently occurring class (random baseline) __Lennart__
-- [ ] Build 1-gram model __Lennart__
-- [ ] Preprocessing for n-gram model and MLP (2 words before and after the emoji) __Wojtek__
-- [ ] Create a dataframe with the _sum_ of the embeddings of 4 words and a one-hot encoded target emoji __Wojtek__
-- [ ] Create a dataframe with the _concatenation_ of the embeddings of 4 words and a one-hot encoded target emoji  __Wojtek__
+- [X] Calculate the percentage of the most frequently occurring class (random baseline) __Lennart__
+- [X] Build 1-gram model __Lennart__
+- [X] Preprocessing for n-gram model and MLP (2 words before and after the emoji) __Wojtek__
+- [X] Create a dataframe with the _sum_ of the embeddings of 4 words and a one-hot encoded target emoji __Wojtek__
+- [X] Create a dataframe with the _concatenation_ of the embeddings of 4 words and a one-hot encoded target emoji  __Wojtek__
 - [ ] Address the class imbalance (data augmentation) __Lennart__
-- [ ] Build n-gram __Lennart__
-- [ ] Build MLP __Laura__
-- [ ] Evaluate the models (at least balanced accuracy, F1, confusion matrix?) __Lennart__, __Laura__
-- [ ] Overleaf document outlining what we have done so far and what we are planning to do/improve + include contributions __everyone__
+- [X] Build n-gram __Lennart__
+- [X] Build MLP __Laura__
+- [X] Evaluate the models (at least balanced accuracy, F1, confusion matrix?) __Lennart__, __Laura__
+- [X] Overleaf document outlining what we have done so far and what we are planning to do/improve + include contributions __everyone__
+- [ ] Deploy the model __Wojtek__
+- [ ] Make API documentation __Laura__
+- [ ] Work on MLP __Laura__
+- [ ] Optimize the hyperparameters __Lennart__
+- [ ] Figure out the data for sequence models
+- [ ] Evaluate MLP
+- [ ] Compute confusion matrices
 
 ## Data
 We use the train.txt and test.txt files from
