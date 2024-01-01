@@ -12,7 +12,7 @@ def four_gram_data(df):
     return X, y
 
 
-def four_gram(X_train, y_train, X_test, y_test, results, _):
+def four_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
     data_path = Path(__file__).parent.parent / 'data'
     emoji_path = data_path / 'emojis.txt'
 
@@ -44,4 +44,4 @@ def four_gram(X_train, y_train, X_test, y_test, results, _):
         else:
             predictions.append(four_gram_dict[words])
 
-    results.append(evaluate_predictions(predictions, y_test))
+    results_dict[i] = evaluate_predictions(predictions, y_test)

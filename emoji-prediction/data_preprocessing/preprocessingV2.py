@@ -90,8 +90,8 @@ def generate_train_dataframe(df, word_to_embedding, index_to_word, embedding_sha
                                                    prefix=['Target_class'])
     concatenation_of_embedding_df.to_pickle(data_path / f'word_around_emoji_concatenation_of_embeddings.pkl')
 
-def generate_sequence_dataframe(df, token = -1):
 
+def generate_sequence_dataframe(df, token=-1):
     data_path = Path(__file__).parent.parent / 'data'
     sequence = []
 
@@ -104,7 +104,7 @@ def generate_sequence_dataframe(df, token = -1):
         if emoji_ix.size > 0:
             i = 1
             for ix in emoji_ix:
-                words = np.insert(words, ix+i, token)
+                words = np.insert(words, ix + i, token)
                 i += 1
             sequence.append((words, emojis))
 
@@ -114,8 +114,8 @@ def generate_sequence_dataframe(df, token = -1):
 
 if __name__ == '__main__':
     t = time()
-    df = load_basic_dataframe(1)
+    df = load_basic_dataframe(50)
     ix_to_word, word_to_glove, shape = generate_dictionaries()
-    #generate_sequence_dataframe(df)
-    #generate_train_dataframe(df, word_to_glove, ix_to_word, shape)
+    generate_sequence_dataframe(df)
+    generate_train_dataframe(df, word_to_glove, ix_to_word, shape)
     print(f'Time taken: {time() - t}')

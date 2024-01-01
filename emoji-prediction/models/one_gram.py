@@ -11,7 +11,7 @@ def one_gram_data(df):
     return X, y
 
 
-def one_gram(X_train, y_train, X_test, y_test, results, _):
+def one_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
     data_path = Path(__file__).parent.parent / 'data'
     emoji_path = data_path / 'emojis.txt'
 
@@ -39,4 +39,4 @@ def one_gram(X_train, y_train, X_test, y_test, results, _):
         else:
             predictions.append(np.argmax(one_gram_dict[word]))
 
-    results.append(evaluate_predictions(predictions, y_test))
+    results_dict[i] = evaluate_predictions(predictions, y_test)

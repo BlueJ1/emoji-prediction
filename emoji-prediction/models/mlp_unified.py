@@ -61,7 +61,6 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     num_epochs = hyperparameters['num_epochs']
     batch_size = hyperparameters['batch_size']
 
-
     # Build the MLP model
     model = keras.Sequential([
         layers.Input(shape=(input_dim,)),  # Assuming 50 features
@@ -88,7 +87,6 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-
     # Train the model (in silent mode, verbose=0)
     tqdm_callback = TqdmMetricsProgressBarCallback(num_epochs, validation_data=(X_test, y_test),
                                                    eval_interval=10)
@@ -101,8 +99,8 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
 
     results_dict[fold_number] = evaluation
 
-def mlp_data(df):
 
+def mlp_data(df):
     expanded_df = df.apply(lambda row: pd.Series(row['words']), axis=1)
 
     # Concatenate the expanded columns with the original DataFrame
@@ -116,4 +114,7 @@ def mlp_data(df):
 
     X = tf.cast(X, tf.float32)
     y = tf.cast(y, tf.float32)
-    return X,y
+    print(X.shape, y.shape)
+    print(X)
+    print(y)
+    return X, y
