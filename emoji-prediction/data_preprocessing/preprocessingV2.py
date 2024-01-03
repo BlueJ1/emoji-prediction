@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 from parse_to_df import parse_to_df
 from time import time
+import gc
 
 
 def keep_words_surrounding_emoji(row, num_of_words_before, num_of_words_after, index_to_word, word_to_embedding,
@@ -114,7 +115,7 @@ def generate_sequence_dataframe(df, token=-1):
 
 if __name__ == '__main__':
     t = time()
-    df = load_basic_dataframe(50)
+    df = load_basic_dataframe(10000)
     ix_to_word, word_to_glove, shape = generate_dictionaries()
     generate_sequence_dataframe(df)
     generate_train_dataframe(df, word_to_glove, ix_to_word, shape)
