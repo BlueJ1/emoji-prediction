@@ -6,39 +6,45 @@ from pickle import dump
 from pathlib import Path
 import tensorflow as tf
 
-from models.four_gram import four_gram, four_gram_data
-from models.one_gram import one_gram, one_gram_data
-from models.baseline import baseline, baseline_data
-from models.mlp_unified import mlp_data, train_fold
+try:
+    from models.four_gram import four_gram, four_gram_data
+    from models.one_gram import one_gram, one_gram_data
+    from models.baseline import baseline, baseline_data
+    from models.mlp_unified import mlp_data, train_fold
+except ImportError:
+    from four_gram import four_gram, four_gram_data
+    from one_gram import one_gram, one_gram_data
+    from baseline import baseline, baseline_data
+    from mlp_unified import mlp_data, train_fold
 
 parameters = [
-    # dict(
-    #     name='baseline',
-    #     data_preprocessing=baseline_data,
-    #     data_file='word_before_emoji_index.pkl',
-    #     evaluate=baseline,
-    #     hyperparameters=dict(),
-    #     mlp=False,
-    #     parallel=True
-    # ),
-    # dict(
-    #     name='one_gram',
-    #     data_preprocessing=one_gram_data,
-    #     data_file='word_before_emoji_index.pkl',
-    #     evaluate=one_gram,
-    #     hyperparameters=dict(),
-    #     mlp=False,
-    #     parallel=True
-    # ),
-    # dict(
-    #     name='four_gram',
-    #     data_preprocessing=four_gram_data,
-    #     data_file='words_around_emoji_index.pkl',
-    #     evaluate=four_gram,
-    #     hyperparameters=dict(),
-    #     mlp=False,
-    #     parallel=True
-    # ),
+    dict(
+        name='baseline',
+        data_preprocessing=baseline_data,
+        data_file='word_before_emoji_index.pkl',
+        evaluate=baseline,
+        hyperparameters=dict(),
+        mlp=False,
+        parallel=True
+    ),
+    dict(
+        name='one_gram',
+        data_preprocessing=one_gram_data,
+        data_file='word_before_emoji_index.pkl',
+        evaluate=one_gram,
+        hyperparameters=dict(),
+        mlp=False,
+        parallel=True
+    ),
+    dict(
+        name='four_gram',
+        data_preprocessing=four_gram_data,
+        data_file='words_around_emoji_index.pkl',
+        evaluate=four_gram,
+        hyperparameters=dict(),
+        mlp=False,
+        parallel=True
+    ),
     dict(
         name='mlp_concat',
         data_preprocessing=mlp_data,
@@ -48,7 +54,7 @@ parameters = [
                              output_dim=49,
                              lr=1e-5,
                              num_epochs=1000,
-                             batch_size=2048,
+                             batch_size=512,
                              gpu_id=0),
         mlp=True,
         parallel=True
@@ -62,7 +68,7 @@ parameters = [
                              output_dim=49,
                              lr=1e-5,
                              num_epochs=1000,
-                             batch_size=2048,
+                             batch_size=1024,
                              gpu_id=0),
         mlp=True,
         parallel=True

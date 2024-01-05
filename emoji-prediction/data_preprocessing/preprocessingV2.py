@@ -3,7 +3,6 @@ import pandas as pd
 from pathlib import Path
 from parse_to_df import parse_to_df
 from time import time
-import gc
 
 
 def keep_words_surrounding_emoji(row, num_of_words_before, num_of_words_after, index_to_word, word_to_embedding,
