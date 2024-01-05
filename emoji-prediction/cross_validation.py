@@ -6,16 +6,10 @@ from pickle import dump
 from pathlib import Path
 import tensorflow as tf
 
-try:
-    from models.four_gram import four_gram, four_gram_data
-    from models.one_gram import one_gram, one_gram_data
-    from models.baseline import baseline, baseline_data
-    from models.mlp_unified import mlp_data, train_fold
-except ImportError:
-    from four_gram import four_gram, four_gram_data
-    from one_gram import one_gram, one_gram_data
-    from baseline import baseline, baseline_data
-    from mlp_unified import mlp_data, train_fold
+from models.four_gram import four_gram, four_gram_data
+from models.one_gram import one_gram, one_gram_data
+from models.baseline import baseline, baseline_data
+from models.mlp_unified import mlp_data, train_fold
 
 parameters = [
     dict(
@@ -81,6 +75,14 @@ if __name__ == '__main__':
     k = 5
     results = {}
     num_gpus = len(tf.config.experimental.list_physical_devices('GPU'))
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if gpus:
+        try:
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, True)
+
+        except RuntimeError as e:
+            print(e)
 
     for parameter_dict in parameters:
         print(f'Running {parameter_dict["name"]} model')
