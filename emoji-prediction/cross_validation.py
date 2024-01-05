@@ -12,33 +12,33 @@ from models.baseline import baseline, baseline_data
 from models.mlp_unified import mlp_data, train_fold
 
 parameters = [
-    dict(
-        name='baseline',
-        data_preprocessing=baseline_data,
-        data_file='word_before_emoji_index.pkl',
-        evaluate=baseline,
-        hyperparameters=dict(),
-        mlp=False,
-        parallel=True
-    ),
-    dict(
-        name='one_gram',
-        data_preprocessing=one_gram_data,
-        data_file='word_before_emoji_index.pkl',
-        evaluate=one_gram,
-        hyperparameters=dict(),
-        mlp=False,
-        parallel=True
-    ),
-    dict(
-        name='four_gram',
-        data_preprocessing=four_gram_data,
-        data_file='words_around_emoji_index.pkl',
-        evaluate=four_gram,
-        hyperparameters=dict(),
-        mlp=False,
-        parallel=True
-    ),
+    # dict(
+    #     name='baseline',
+    #     data_preprocessing=baseline_data,
+    #     data_file='word_before_emoji_index.pkl',
+    #     evaluate=baseline,
+    #     hyperparameters=dict(),
+    #     mlp=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='one_gram',
+    #     data_preprocessing=one_gram_data,
+    #     data_file='word_before_emoji_index.pkl',
+    #     evaluate=one_gram,
+    #     hyperparameters=dict(),
+    #     mlp=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='four_gram',
+    #     data_preprocessing=four_gram_data,
+    #     data_file='words_around_emoji_index.pkl',
+    #     evaluate=four_gram,
+    #     hyperparameters=dict(),
+    #     mlp=False,
+    #     parallel=True
+    # ),
     dict(
         name='mlp_concat',
         data_preprocessing=mlp_data,
