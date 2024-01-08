@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: Emoji Prediction API
+  description: This is the API for the Emoji Prediction task, we will predict the emoji for 
+    a given text. You may choose between different models.
+  version: 1.0.0
+  contact:
+      name: Lennart August, Laura M Quirós, Wojtek Anyszka
+servers:
+  - url: http://localhost:8080
+
+
+components:
+    schemas:
+        Tweet:
+          type: object
+          properties:
+              text:
+                type: string
+                description: The text to be analyzed
+                example: "I love apples"
+          required:
+              - text
+          example:
+              text: "I love apples"
+        Emoji:
+          type: object
+          properties:
+              emoji:
+                type: string
+                description: The predicted emoji
+                example: "😍"
+          required:
+              - emoji
+          example:
+              emoji: "😍"
+
+    responses:
+        NoResults:
+          description: List empty; no results
+          content:
+              application/json:
+                schema:
+                    type : string
+                example: |-
+                    204, "Resource requested was empty"
+        ServerError:
+          description: Server error; no results, try again later
+          content:
+              application/json:
+                schema:
+                    type : string
+                example: |-
+                    5XX, "There was a server error"
+        BadRequest:
+          description: Bad request; no results, try again later
+          content:
+              application/json:
+                schema:
+                    type : string
+                example: |-
+                    400, "Bad request"
+
+paths:
+  /predict-emoji:
+    get:
+      summary: Predict Emoji based on Text and Model
+      parameters:
+        - name: text
+          in: query
+          description: Input text for prediction
+          required: true
+          schema:
+            type: string
+        - name: model
+          in: query
+          description: Selected model for prediction
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Emoji'
+        '204':
+          description: No results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NoResults'
+        '5XX':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ServerError'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadRequest'
+  
