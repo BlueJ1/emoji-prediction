@@ -143,7 +143,7 @@ Your repository should look something like this:
 │   └───models
 ├───.gitignore
 ├───.pre-commit-config.yaml
-├───main.py
+├───app.py
 ├───train_model.py
 ├───Pipfile
 ├───Pipfile.lock
