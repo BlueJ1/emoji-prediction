@@ -3,6 +3,6 @@ Pipfile.lock
 __pycache__/
 .DS_Store
 venv/*
-frontend/.venv/
+demo-streamlit/.venv/
 env/*
 ```
