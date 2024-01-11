@@ -53,7 +53,7 @@ parameters = [
                              gpu_id=0),
         mlp=True,
         balance_dataset=False,
-        parallel=False
+        parallel=True
     ),
     dict(
         name='mlp_concat',
@@ -68,7 +68,7 @@ parameters = [
                              gpu_id=0),
         mlp=True,
         balance_dataset=True,
-        parallel=False
+        parallel=True
     ),
     dict(
         name='mlp_sum',
