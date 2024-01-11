@@ -8,11 +8,8 @@ greenlet==3.0.1
 h11==0.14.0
 httptools==0.6.1
 idna==3.4
-mariadb==1.1.8
 packaging==23.2
-pydantic==2.5.1
-pydantic-settings==2.1.0
-pydantic_core==2.14.3
+pydantic==1.*
 PyMySQL==1.1.0
 python-dotenv==1.0.0
 PyYAML==6.0.1
@@ -23,3 +20,4 @@ typing_extensions==4.8.0
 uvicorn==0.24.0.post1
 watchfiles==0.21.0
 websockets==12.0
+streamlit==1.29

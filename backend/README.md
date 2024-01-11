@@ -6,7 +6,7 @@ To run backend:
   - pip install -r requirements.txt
 
 - For windows:
-  - python -m pip install virtualenv 
+  - python -m pip install virtualenv
   - python -m virtualenv env 
   - .\env\Scripts\activate
 
