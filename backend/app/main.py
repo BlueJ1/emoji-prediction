@@ -24,6 +24,18 @@ app.add_middleware(
 )
 
 
+def valid_index(index: int, text: str) -> bool:
+    array_words = text.split()
+    if index < 0 or index >= len(array_words):
+        return False
+
+
+def add_prediction(prediction: str, text: str, index: int) -> str:
+    array_words = text.split()
+    array_words.insert(index, prediction)
+    return " ".join(array_words)
+
+
 @app.get("/", tags=["root"])
 async def home():
     return RedirectResponse(url="/docs")
@@ -37,6 +49,9 @@ async def predict_emoji(text: str, chosen_model: str, index: int):
     if text == "":
         raise HTTPException(status_code=400,
                             detail="Please enter a text to predict emoji")
+    if valid_index(index, text) is False:
+        raise HTTPException(status_code=400,
+                            detail="Please enter a valid index")
     if chosen_model == "":
         raise HTTPException(status_code=400,
                             detail="Please choose a model to predict emoji")
@@ -56,7 +71,7 @@ async def predict_emoji(text: str, chosen_model: str, index: int):
 
     if model != "":
         prediction = model.predict(text, index)
-        return {"prediction": prediction[0]}
+        return add_prediction(prediction, text, index)
     else:
         return {"There was no model loading despite "
                 "having chosen a valid model"}
