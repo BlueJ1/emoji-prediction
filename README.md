@@ -11,16 +11,18 @@
 - [X] Build MLP __Laura__
 - [X] Evaluate the models (at least balanced accuracy, F1, confusion matrix?) __Lennart__, __Laura__
 - [X] Overleaf document outlining what we have done so far and what we are planning to do/improve + include contributions __everyone__
-- [ ] Address the class imbalance (data augmentation) __Wojtek__
-- [ ] Deploy the model __Wojtek__
-- [ ] Make API documentation __Laura__
-- [ ] Work on MLP __Laura__
-- [ ] Optimize the hyperparameters __Lennart__
-- [ ] Figure out the data for sequence models (insert special token at position to predict emoji, use zero-vector as embedding for that token) __Wojtek__
+- [x] Address the class imbalance (data augmentation) __Wojtek__
+- [x] Make API documentation __Laura__
+- [x] Work on MLP __Laura__
+- [x] Figure out the data for sequence models (insert special token at position to predict emoji, use zero-vector as embedding for that token) __Wojtek__
+- [x] Compute confusion matrices  __Lennart__
 - [ ] Evaluate MLP  __Laura__
-- [ ] Compute confusion matrices  __Lennart__
+- [ ] Bayesian Model and Decision Tree (maybe random forest) __Wojtek__
+- [ ] SVM and Logistic Regression __Laura__
 - [ ] Build LSTM __Lennart__
 - [ ] Build Attention-based model __Lennart__
+- [ ] Deploy the model to API __Lennart__
+- [ ] Optimize the hyperparameters __Lennart__
 
 ## Data
 We use the train.txt and test.txt files from

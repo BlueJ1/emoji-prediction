@@ -10,6 +10,7 @@ from models.four_gram import four_gram, four_gram_data
 from models.one_gram import one_gram, one_gram_data
 from models.baseline import baseline, baseline_data
 from models.mlp_unified import mlp_data, train_fold
+from balance_dataset import balance_multiclass_dataset
 
 parameters = [
     # dict(
@@ -46,17 +47,33 @@ parameters = [
         evaluate=train_fold,
         hyperparameters=dict(input_dim=200,
                              output_dim=49,
-                             lr=1e-5,
-                             num_epochs=1000,
+                             lr=1e-4,
+                             num_epochs=20,
                              batch_size=1024,
                              gpu_id=0),
         mlp=True,
+        balance_dataset=False,
+        parallel=False
+    ),
+    dict(
+        name='mlp_concat',
+        data_preprocessing=mlp_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_fold,
+        hyperparameters=dict(input_dim=200,
+                             output_dim=49,
+                             lr=1e-4,
+                             num_epochs=20,
+                             batch_size=1024,
+                             gpu_id=0),
+        mlp=True,
+        balance_dataset=True,
         parallel=False
     ),
     dict(
         name='mlp_sum',
         data_preprocessing=mlp_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        data_file='word_around_emoji_sum_of_embeddings.pkl',
         evaluate=train_fold,
         hyperparameters=dict(input_dim=50,
                              output_dim=49,
@@ -65,7 +82,8 @@ parameters = [
                              batch_size=2048,
                              gpu_id=0),
         mlp=True,
-        parallel=False
+        balance_dataset=True,
+        parallel=True
     )
 ]
 
@@ -106,6 +124,9 @@ if __name__ == '__main__':
                     else:
                         X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
                         y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
+
+                    if parameter_dict['balance_dataset']:
+                        X_train, y_train = balance_multiclass_dataset(X_train, y_train)
                     parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
 
                     p = Process(target=parameter_dict["evaluate"], args=(
@@ -126,6 +147,9 @@ if __name__ == '__main__':
                 else:
                     X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
                     y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
+
+                if parameter_dict['balance_dataset']:
+                    X_train, y_train = balance_multiclass_dataset(X_train, y_train)
                 parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus
                 parameter_dict['evaluate'](i, X_train, y_train, X_test, y_test, results_dict,
                                            parameter_dict['hyperparameters'])

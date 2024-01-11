@@ -3,7 +3,7 @@ import pandas as pd
 import tensorflow as tf
 from keras import layers
 from keras.metrics import F1Score
-from keras.optimizers.legacy import Adam
+from keras.optimizers.legacy import Adam, SGD
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.callbacks import Callback
 from tqdm import tqdm
@@ -20,7 +20,7 @@ def setup_gpu(gpu_id):
 
 
 class TqdmMetricsProgressBarCallback(Callback):
-    def __init__(self, total_epochs, validation_data=None, eval_interval=10):
+    def __init__(self, total_epochs, validation_data=None, eval_interval=1):
         super().__init__()
         self.total_epochs = total_epochs
         self.progress_bar = None
@@ -64,20 +64,20 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     # Build the MLP model
     model = keras.Sequential([
         layers.Input(shape=(input_dim,)),  # Assuming 50 features
+        layers.Dense(512, activation='relu'),
+        # layers.Dropout(0.2),  # Adding dropout for regularization
+        layers.Dense(256, activation='relu'),
+        # layers.Dropout(0.15),  # Adding dropout for regularization
         layers.Dense(128, activation='relu'),
-        layers.Dropout(0.1),  # Adding dropout for regularization
-        layers.Dense(128, activation='relu'),
-        layers.Dropout(0.1),  # Adding dropout for regularization
-        layers.Dense(128, activation='relu'),
-        layers.Dropout(0.1),  # Adding dropout for regularization
+        # layers.Dropout(0.1),  # Adding dropout for regularization
         layers.Dense(128, activation='relu'),  # fewer units
-        layers.Dropout(0.1),  # Adding dropout for regularization
+        # layers.Dropout(0.05),  # Adding dropout for regularization
         layers.Dense(output_dim, activation='softmax')  # Assuming 49 emoji classes
     ])
 
     # Compile the model
     model.compile(
-        optimizer=Adam(learning_rate=learning_rate),
+        optimizer=SGD(learning_rate=learning_rate),  # Adam(learning_rate=learning_rate),
         loss='CategoricalCrossentropy',
         metrics=[F1Score(average="weighted", dtype=tf.float32), "accuracy"])
 
@@ -89,7 +89,7 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
 
     # Train the model (in silent mode, verbose=0)
     tqdm_callback = TqdmMetricsProgressBarCallback(num_epochs, validation_data=(X_test, y_test),
-                                                   eval_interval=10)
+                                                   eval_interval=1)
     history = model.fit(X_train, y_train,
                         epochs=num_epochs, batch_size=batch_size, verbose=0,
                         callbacks=[tqdm_callback])
