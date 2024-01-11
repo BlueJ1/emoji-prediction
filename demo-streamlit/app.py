@@ -14,9 +14,10 @@ class Model(Enum):
 class ModelInput(BaseModel):
     text: str
     chosen_model: Model
+    index: int
 
 
-def train(text: str, model: str) -> str:
+def train(text: str, model: str, index: int) -> str:
     return "😀"
 
 
@@ -32,7 +33,8 @@ def main():
         if data == "":
             st.warning("You did not enter a tweet yet")
         else:
-            prediction = train(data["text"], data["chosen_model"])
+            prediction = train(data["text"],
+                               data["chosen_model"], data["index"])
             st.write(f"Predicted emoji: {prediction}")
 
 
