@@ -5,7 +5,7 @@ from parse_to_df import parse_to_df
 from time import time
 
 
-def keep_words_surrounding_emoji(row, num_of_words_before, num_of_words_after, index_to_word, word_to_embedding,
+def keep_words_surrounding_emoji(row, num_of_words_before, num_of_words_after, index_to_word, word_to_embedding: dict,
                                  embedding_shape):
     padded_emojis = np.pad(row['sequence_emojis'], (num_of_words_before - 1, num_of_words_after), 'constant',
                            constant_values=(0, 0))
@@ -91,31 +91,29 @@ def generate_train_dataframe(df, word_to_embedding, index_to_word, embedding_sha
     concatenation_of_embedding_df.to_pickle(data_path / f'word_around_emoji_concatenation_of_embeddings.pkl')
 
 
-def generate_sequence_dataframe(df, token=-1):
+def generate_sequence_dataframe(df: pd.DataFrame, word_to_embedding: dict, token: int = -1):
     data_path = Path(__file__).parent.parent / 'data'
     sequence = []
 
     for t, row in df.iterrows():
-        emoji_ix = np.nonzero(row['sequence_emojis'])[0]
-        if emoji_ix.size == 30:
-            print(t)
+        emoji_ix: np.ndarray = np.nonzero(row['sequence_emojis'])[0]
         words = row['sequence_words']
         emojis = row['sequence_emojis'][emoji_ix]
         if emoji_ix.size > 0:
-            i = 1
-            for ix in emoji_ix:
-                words = np.insert(words, ix + i, token)
-                i += 1
+            for i, ix in enumerate(emoji_ix):
+                words = np.insert(words, ix + i + 1, token)
             sequence.append((words, emojis))
 
     df_sequence = pd.DataFrame(sequence, columns=['word_sequence', 'emojis'])
+    print(df_sequence.shape)
     df_sequence.to_pickle(data_path / f'sequential_data.pkl')
 
 
 if __name__ == '__main__':
     t = time()
-    df = load_basic_dataframe(10000)
+    df = load_basic_dataframe(5)
+    print(df.shape)
     ix_to_word, word_to_glove, shape = generate_dictionaries()
-    generate_sequence_dataframe(df)
+    generate_sequence_dataframe(df, word_to_glove)
     generate_train_dataframe(df, word_to_glove, ix_to_word, shape)
     print(f'Time taken: {time() - t}')
