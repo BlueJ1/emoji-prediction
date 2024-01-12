@@ -3,7 +3,16 @@ import pickle as pkl
 import streamlit as st
 import streamlit_pydantic as sp
 from pydantic import BaseModel
-from emoji_prediction.models.four_gram import four_gram_api_predict
+try:
+    from emoji_prediction.models.four_gram import four_gram_api_predict
+except ModuleNotFoundError:
+    import os
+    print(os.getcwd())
+    import sys
+    sys.path.append(os.path.join(
+        os.path.join(os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), '..'), 'emoji-prediction'), 'models'))
+    from four_gram import four_gram_api_predict
 
 
 class Model(Enum):

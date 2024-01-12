@@ -2,7 +2,7 @@ import pickle as pkl
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from starlette.responses import RedirectResponse
-
+from emoji_prediction.models.four_gram import four_gram_api_predict
 
 tags_metadata = [
     {
@@ -60,17 +60,20 @@ async def predict_emoji(text: str, chosen_model: str, index: int):
                             detail="Please choose a valid model")
 
     model = ""
+    prediction = ""
     if chosen_model == "Four-gram":
-        model = pkl.load(open("models/four_gram_model.pkl", "rb"))
+        model = pkl.load(open("emoji_prediction/models/four_gram.pkl", "rb"))
+        prediction = four_gram_api_predict(text, index)
+    """
     elif chosen_model == "One-gram":
-        model = pkl.load(open("models/one_gram_model.pkl", "rb"))
+        model = pkl.load(open("emoji_prediction/models/one_gram.pkl", "rb"))
     elif chosen_model == "MLPConcat":
-        model = pkl.load(open("models/concat_model.pkl", "rb"))
+        model = pkl.load(
+        open("emoji_prediction/models/concat_model.pkl", "rb"))
     elif chosen_model == "MLPSum":
-        model = pkl.load(open("models/sum_model.pkl", "rb"))
-
+        model = pkl.load(open("emoji_prediction/models/sum_model.pkl", "rb"))
+    """
     if model != "":
-        prediction = model.predict(text, index)
         return add_prediction(prediction, text, index)
     else:
         return {"There was no model loading despite "
