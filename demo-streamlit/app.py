@@ -53,7 +53,7 @@ def train(text: str, chosen_model: str, index: int) -> str:
     elif chosen_model == Model.MLPCONCAT.value:
         prediction = mlp_unified.mlp_concat_api_predict(text, index)
 
-    elif chosen_model == Model.MLPCONCAT:
+    elif chosen_model == "MLP with sum of embeddings":
         print("Not implemented yet")
 
     return prediction
