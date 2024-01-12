@@ -11,7 +11,7 @@ except ModuleNotFoundError:
     import sys
     sys.path.append(os.path.join(
         os.path.join(os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), '..'), 'emoji-prediction'), 'models'))
+            os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
     from four_gram import four_gram_api_predict
 
 
@@ -30,7 +30,7 @@ class ModelInput(BaseModel):
 
 def valid_index(index: int, text: str) -> bool:
     array_words = text.split()
-    if index < 0 or index >= len(array_words):
+    if index < 0 or index > len(array_words):
         return False
 
 
@@ -43,11 +43,11 @@ def add_prediction(prediction: str, text: str, index: int) -> str:
 def train(text: str, chosen_model: str, index: int) -> str:
     model = ""
     prediction = ""
-    if chosen_model == "Four-gram":
+    if chosen_model == Model.FOURGRAM:
         model = pkl.load(open("emoji_prediction/models/four_gram.pkl", "rb"))
         print("This is the model: ", model)
         prediction = four_gram_api_predict(text, index)
-    """
+
     elif chosen_model == "One-gram":
         model = pkl.load(open("models/one_gram_model.pkl", "rb"))
     elif chosen_model == "MLPConcat":
@@ -55,7 +55,7 @@ def train(text: str, chosen_model: str, index: int) -> str:
     elif chosen_model == "MLPSum":
         model = pkl.load(open("models/sum_model.pkl", "rb"))
     prediction = model.predict(text, index)
-    """
+
     return prediction
 
 
@@ -64,6 +64,7 @@ def main():
 
     with st.form(key="pydantic_form"):
         data = sp.pydantic_input(key="my_input_model", model=ModelInput)
+        print(data)
         st.write(data)
         if valid_index(data["index"], data["text"]) is False:
             st.warning("Please enter a valid index")
