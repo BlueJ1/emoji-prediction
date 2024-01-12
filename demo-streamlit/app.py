@@ -41,7 +41,7 @@ def add_prediction(prediction: str, text: str, index: int) -> str:
     return " ".join(array_words)
 
 
-def train(text: str, chosen_model: str, index: int) -> str:
+def predict(text: str, chosen_model: str, index: int) -> str:
     print(chosen_model == Model.FOURGRAM)
     prediction = ""
     if chosen_model == Model.FOURGRAM.value:
@@ -76,8 +76,8 @@ def main():
         if data == "":
             st.warning("You did not enter a tweet yet")
         else:
-            prediction = train(data["text"],
-                               data["chosen_model"], data["index"])
+            prediction = predict(data["text"],
+                                 data["chosen_model"], data["index"])
             st.write(add_prediction(prediction, data["text"], data["index"]))
 
 
