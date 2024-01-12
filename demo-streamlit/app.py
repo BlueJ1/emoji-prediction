@@ -3,6 +3,7 @@ import pickle as pkl
 import streamlit as st
 import streamlit_pydantic as sp
 from pydantic import BaseModel
+from pathlib import Path
 try:
     from emoji_prediction.models.four_gram import four_gram_api_predict
 except ModuleNotFoundError:
@@ -12,7 +13,10 @@ except ModuleNotFoundError:
     sys.path.append(os.path.join(
         os.path.join(os.path.join(os.path.dirname(
             os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
-    from four_gram import four_gram_api_predict
+    print(os.path.join(
+        os.path.join(os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
+    import four_gram
 
 
 class Model(Enum):
@@ -41,12 +45,14 @@ def add_prediction(prediction: str, text: str, index: int) -> str:
 
 
 def train(text: str, chosen_model: str, index: int) -> str:
+    model_dir = Path(os.path.join(
+        os.path.join(os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
     model = ""
     prediction = ""
     if chosen_model == Model.FOURGRAM:
-        model = pkl.load(open("emoji_prediction/models/four_gram.pkl", "rb"))
-        print("This is the model: ", model)
-        prediction = four_gram_api_predict(text, index)
+        # model = pkl.load(open(model_dir / "four_gram.pkl", "rb"))
+        prediction = four_gram.four_gram_api_predict(text, index)
 
     elif chosen_model == "One-gram":
         model = pkl.load(open("models/one_gram_model.pkl", "rb"))
@@ -54,7 +60,7 @@ def train(text: str, chosen_model: str, index: int) -> str:
         model = pkl.load(open("models/concat_model.pkl", "rb"))
     elif chosen_model == "MLPSum":
         model = pkl.load(open("models/sum_model.pkl", "rb"))
-    prediction = model.predict(text, index)
+    # prediction = model.predict(text, index)
 
     return prediction
 
@@ -64,6 +70,8 @@ def main():
 
     with st.form(key="pydantic_form"):
         data = sp.pydantic_input(key="my_input_model", model=ModelInput)
+        chosen_model = st.selectbox("Choose a model", [Model.FOURGRAM, Model.ONEGRAM, Model.MLPCONCAT, Model.MLPSUM])
+        data["chosen_model"] = chosen_model
         print(data)
         st.write(data)
         if valid_index(data["index"], data["text"]) is False:

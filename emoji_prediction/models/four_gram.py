@@ -2,6 +2,7 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 import pickle
+import pandas as pd
 
 try:
     from models.four_gram_class import FourGram
@@ -108,7 +109,7 @@ def four_gram_api_predict(sentence: str, index: int):
     emoji_path = data_path / 'emojis.txt'
     emoji_to_unicode_path = data_path / 'emoji_name_to_unicode.txt'
     model_path = Path(__file__).parent.parent / 'models'
-    four_gram_model_path = model_path / 'four_gram.pkl'
+    four_gram_model_path = Path(__file__).parent / 'four_gram.pkl'
 
     with open(vocab_path, 'r', encoding='utf-8') as f:
         word_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
