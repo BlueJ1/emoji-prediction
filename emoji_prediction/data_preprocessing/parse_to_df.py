@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 
 
-def parse_to_df(data_path: Path = None, file_path: Path = None, size_to_read: int = 0):
+def parse_to_df(data_path: Path = None, file_path: Path = None,
+                size_to_read: int = 0):
     if data_path is None:
         data_path = Path(__file__).parent.parent / 'data'
     if file_path is None:
@@ -37,9 +38,12 @@ def parse_to_df(data_path: Path = None, file_path: Path = None, size_to_read: in
                 sequence_i += 1
                 sequence_words = []
                 sequence_emojis = []
-            elif len(line.split()) == 2 and line.split()[0].lower() in word_vocab and line.split()[1] in emoji_vocab:
-                sequence_words.append(word_vocab[line.split()[0].lower()])
-                sequence_emojis.append(emoji_vocab[line.split()[1]])
+            elif len(line.split()) == 2:
+                if line.split()[0].lower() in word_vocab:
+                    if line.split()[1] in emoji_vocab:
+                        sequence_words.append(
+                            word_vocab[line.split()[0].lower()])
+                        sequence_emojis.append(emoji_vocab[line.split()[1]])
 
     df = pd.DataFrame(sequences, columns=['sequence_words', 'sequence_emojis'])
 

@@ -1,4 +1,5 @@
-# this file is used to predict emojis using the baseline model of guessing the most common emoji
+# this file is used to predict emojis using the baseline
+# model of guessing the most common emoji
 
 import numpy as np
 

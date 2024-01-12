@@ -2,7 +2,6 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 import pickle
-import pandas as pd
 
 try:
     from models.four_gram_class import FourGram
@@ -78,10 +77,12 @@ def generate_four_gram(X, y, _):
     for key, value in tqdm(four_gram_dict.items()):
         four_gram_dict[key] = np.argmax(value)
 
-    pickle.dump((four_gram_dict, most_common_emoji), open('four_gram.pkl', 'wb+'))
+    pickle.dump((four_gram_dict, most_common_emoji),
+                open('four_gram.pkl', 'wb+'))
 
 
-def four_gram_process_api_data(sentence: str, index: int, word_vocab: dict) -> FourGram:
+def four_gram_process_api_data(sentence: str,
+                               index: int, word_vocab: dict) -> FourGram:
     words = sentence.lower().split()
     if index < 2:
         words_before = [''] * (2 - index) + words[:index]
@@ -94,7 +95,8 @@ def four_gram_process_api_data(sentence: str, index: int, word_vocab: dict) -> F
         words_after = words[index:index + 2]
 
     words_around = words_before + words_after
-    words_around = [word_vocab[word] if word in word_vocab else word_vocab[''] for word in words_around]
+    words_around = [word_vocab[word] if word in word_vocab
+                    else word_vocab[''] for word in words_around]
     four_gram = FourGram(np.array(words_around))
 
     return four_gram
@@ -112,14 +114,18 @@ def four_gram_api_predict(sentence: str, index: int):
         word_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 
     with open(emoji_path, 'r', encoding='utf-8') as f:
-        emoji_vocab = {idx: emoji[:-1] for idx, emoji in enumerate(f.readlines())}
+        emoji_vocab = {idx: emoji[:-1] for idx, emoji in enumerate(
+            f.readlines())}
 
     with open(emoji_to_unicode_path, 'r', encoding='utf-8') as f:
-        emoji_to_unicode = {emoji: unicode for emoji, unicode in [line.split() for line in f.readlines()]}
+        emoji_to_unicode = {emoji: unicode for emoji, unicode in [
+            line.split() for line in f.readlines()]}
 
-    four_gram_dict, most_common_emoji = pickle.load(open(four_gram_model_path, 'rb'))
+    four_gram_dict, most_common_emoji = pickle.load(
+        open(four_gram_model_path, 'rb'))
 
-    four_gram: FourGram = four_gram_process_api_data(sentence, index, word_vocab)
+    four_gram: FourGram = four_gram_process_api_data(
+        sentence, index, word_vocab)
 
     if four_gram in four_gram_dict:
         predicted_idx = four_gram_dict[four_gram]

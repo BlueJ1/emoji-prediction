@@ -6,9 +6,6 @@ from pickle import dump
 from pathlib import Path
 import tensorflow as tf
 
-from models.four_gram import four_gram, four_gram_data
-from models.one_gram import one_gram, one_gram_data
-from models.baseline import baseline, baseline_data
 from models.mlp_unified import mlp_data, train_fold
 from balance_dataset import balance_multiclass_dataset
 
@@ -114,23 +111,31 @@ if __name__ == '__main__':
         results[parameter_dict['name']] = []
 
         if parameter_dict['parallel']:
-            with Manager() as manager:
+            with ((Manager()) as manager):
                 results_dict = manager.dict()
                 processes = []
-                for i, (train_index, test_index) in enumerate(cv.split(np.zeros(X.shape[0]), np.zeros(y.shape[0]))):
+                for i, (train_index, test_index) in enumerate(
+                        cv.split(np.zeros(X.shape[0]), np.zeros(y.shape[0]))):
                     if isinstance(X, np.ndarray):
                         X_train, X_test = X[train_index], X[test_index]
                         y_train, y_test = y[train_index], y[test_index]
                     else:
-                        X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
-                        y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
+                        X_train, X_test = tf.gather(
+                            X, indices=train_index), tf.gather(
+                            X, indices=test_index)
+                        y_train, y_test = tf.gather(
+                            y, indices=train_index), tf.gather(
+                            y, indices=test_index)
 
                     if parameter_dict['balance_dataset']:
-                        X_train, y_train = balance_multiclass_dataset(X_train, y_train)
-                    parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
+                        X_train, y_train = balance_multiclass_dataset(
+                            X_train, y_train)
+                    parameter_dict['hyperparameters'][
+                        'gpu_id'] = i % num_gpus if num_gpus > 0 else -1
 
                     p = Process(target=parameter_dict["evaluate"], args=(
-                    i, X_train, y_train, X_test, y_test, results_dict, parameter_dict['hyperparameters']))
+                        i, X_train, y_train, X_test, y_test,
+                        results_dict, parameter_dict['hyperparameters']))
                     p.start()
                     processes.append(p)
 
@@ -139,19 +144,24 @@ if __name__ == '__main__':
 
                 results_dict = dict(results_dict)
         else:
-            for i, (train_index, test_index) in enumerate(cv.split(np.zeros(X.shape[0]), np.zeros(y.shape[0]))):
+            for i, (train_index, test_index) in enumerate(
+                    cv.split(np.zeros(X.shape[0]), np.zeros(y.shape[0]))):
                 results_dict = {}
                 if isinstance(X, np.ndarray):
                     X_train, X_test = X[train_index], X[test_index]
                     y_train, y_test = y[train_index], y[test_index]
                 else:
-                    X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
-                    y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
+                    X_train, X_test = (tf.gather(X, indices=train_index),
+                                       tf.gather(X, indices=test_index))
+                    y_train, y_test = (tf.gather(y, indices=train_index),
+                                       tf.gather(y, indices=test_index))
 
                 if parameter_dict['balance_dataset']:
-                    X_train, y_train = balance_multiclass_dataset(X_train, y_train)
+                    X_train, y_train = balance_multiclass_dataset(
+                        X_train, y_train)
                 parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus
-                parameter_dict['evaluate'](i, X_train, y_train, X_test, y_test, results_dict,
+                parameter_dict['evaluate'](i, X_train, y_train, X_test,
+                                           y_test, results_dict,
                                            parameter_dict['hyperparameters'])
 
         for val in results_dict.values():

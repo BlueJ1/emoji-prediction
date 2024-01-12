@@ -29,6 +29,7 @@ for index, row in tqdm(df.iterrows()):
     one_gram_matrix[word, emoji] += 1
 
 # normalize the matrix, while accounting for zero rows
-one_gram_matrix = one_gram_matrix / np.maximum(one_gram_matrix.sum(axis=1, keepdims=True), 1)
+one_gram_matrix = one_gram_matrix / np.maximum(
+    one_gram_matrix.sum(axis=1, keepdims=True), 1)
 
 np.save(model_path / 'one_gram_matrix.npy', one_gram_matrix)

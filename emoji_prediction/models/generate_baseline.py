@@ -1,4 +1,5 @@
-# the random baseline always predicts the most frequent emoji in the training set
+# the random baseline always predicts the
+# most frequent emoji in the training set
 
 import pandas as pd
 import numpy as np
