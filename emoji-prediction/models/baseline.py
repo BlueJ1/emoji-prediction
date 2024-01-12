@@ -11,10 +11,10 @@ def baseline_data(df):
     return X, y
 
 
-def baseline(X_train, y_train, X_test, y_test, results, _):
+def baseline(i, X_train, y_train, X_test, y_test, results_dict, _):
     unique_emojis, counts = np.unique(y_train, return_counts=True)
     most_common_emoji = unique_emojis[np.argmax(counts)]
 
     predictions = np.repeat(most_common_emoji, len(X_test))
 
-    results.append(evaluate_predictions(predictions, y_test))
+    results_dict[i] = evaluate_predictions(predictions, y_test)
