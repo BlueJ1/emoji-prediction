@@ -5,4 +5,6 @@ __pycache__/
 venv/*
 demo-streamlit/.venv/
 env/*
+data/*
+emoji_prediction/data/*
 ```

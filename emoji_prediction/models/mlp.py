@@ -13,8 +13,8 @@ from keras.metrics import SparseCategoricalAccuracy
 # 'future_word1', 'future_word2', 'emoji_index'
 
 # Load your data and preprocess it
-train = pd.read_csv('emoji-prediction/data/train.csv')
-test = pd.read_csv('emoji-prediction/data/test.csv')
+train = pd.read_csv('emoji_prediction/data/train.csv')
+test = pd.read_csv('emoji_prediction/data/test.csv')
 
 # Use LabelEncoder to convert emoji indexes to sequential
 # integers (string to int)

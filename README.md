@@ -134,7 +134,7 @@ Your repository should look something like this:
 ├───data  # Stores .csv
 ├───models  # Stores .pkl
 ├───notebooks  # Contains experimental .ipynbs
-├───emoji-prediction
+├───emoji_prediction
 │   ├───data  # For data processing, not storing .csv
 │   ├───features
 │   └───models  # For model creation, not storing .pkl

@@ -1,8 +1,9 @@
 from enum import Enum
+import pickle as pkl
 import streamlit as st
 import streamlit_pydantic as sp
 from pydantic import BaseModel
-# import pickle as pkl
+from emoji_prediction.models.four_gram import four_gram_api_predict
 
 
 class Model(Enum):
@@ -31,10 +32,13 @@ def add_prediction(prediction: str, text: str, index: int) -> str:
 
 
 def train(text: str, chosen_model: str, index: int) -> str:
-    """
     model = ""
+    prediction = ""
     if chosen_model == "Four-gram":
-        model = pkl.load(open("models/four_gram_model.pkl", "rb"))
+        model = pkl.load(open("emoji_prediction/models/four_gram.pkl", "rb"))
+        print("This is the model: ", model)
+        prediction = four_gram_api_predict(text, index)
+    """
     elif chosen_model == "One-gram":
         model = pkl.load(open("models/one_gram_model.pkl", "rb"))
     elif chosen_model == "MLPConcat":
@@ -43,7 +47,7 @@ def train(text: str, chosen_model: str, index: int) -> str:
         model = pkl.load(open("models/sum_model.pkl", "rb"))
     prediction = model.predict(text, index)
     """
-    return "😀"
+    return prediction
 
 
 def main():
