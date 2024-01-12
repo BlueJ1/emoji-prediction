@@ -5,25 +5,22 @@ import streamlit_pydantic as sp
 from pydantic import BaseModel
 from pathlib import Path
 try:
-    from emoji_prediction.models.four_gram import four_gram_api_predict
+    from emoji_prediction.models import four_gram
 except ModuleNotFoundError:
     import os
-    print(os.getcwd())
     import sys
     sys.path.append(os.path.join(
         os.path.join(os.path.join(os.path.dirname(
             os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
-    print(os.path.join(
-        os.path.join(os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
     import four_gram
+    import mlp_unified
 
 
 class Model(Enum):
     FOURGRAM = 'Four-gram'
-    ONEGRAM = 'One-gram'
+    # ONEGRAM = 'One-gram'
     MLPCONCAT = 'MLP with concatenation of embeddings'
-    MLPSUM = 'MLP with sum of embeddings'
+    # MLPSUM = 'MLP with sum of embeddings'
 
 
 class ModelInput(BaseModel):
@@ -45,22 +42,19 @@ def add_prediction(prediction: str, text: str, index: int) -> str:
 
 
 def train(text: str, chosen_model: str, index: int) -> str:
-    model_dir = Path(os.path.join(
-        os.path.join(os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
-    model = ""
+    print(chosen_model == Model.FOURGRAM)
     prediction = ""
-    if chosen_model == Model.FOURGRAM:
-        # model = pkl.load(open(model_dir / "four_gram.pkl", "rb"))
+    if chosen_model == Model.FOURGRAM.value:
         prediction = four_gram.four_gram_api_predict(text, index)
 
     elif chosen_model == "One-gram":
-        model = pkl.load(open("models/one_gram_model.pkl", "rb"))
-    elif chosen_model == "MLPConcat":
-        model = pkl.load(open("models/concat_model.pkl", "rb"))
-    elif chosen_model == "MLPSum":
-        model = pkl.load(open("models/sum_model.pkl", "rb"))
-    # prediction = model.predict(text, index)
+        print("Not implemented yet")
+
+    elif chosen_model == Model.MLPCONCAT.value:
+        prediction = mlp_unified.mlp_concat_api_predict(text, index)
+
+    elif chosen_model == Model.MLPCONCAT:
+        print("Not implemented yet")
 
     return prediction
 
@@ -70,7 +64,7 @@ def main():
 
     with st.form(key="pydantic_form"):
         data = sp.pydantic_input(key="my_input_model", model=ModelInput)
-        chosen_model = st.selectbox("Choose a model", [Model.FOURGRAM, Model.ONEGRAM, Model.MLPCONCAT, Model.MLPSUM])
+        chosen_model = st.selectbox("Choose a model", [model.value for model in Model])
         data["chosen_model"] = chosen_model
         print(data)
         st.write(data)
