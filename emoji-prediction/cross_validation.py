@@ -15,15 +15,15 @@ from models.classic_ml_models import basic_ml_data, train_rf, train_svm, train_k
     train_gaussian_process
 
 parameters = [
-    # dict(
-    #     name='baseline',
-    #     data_preprocessing=baseline_data,
-    #     data_file='word_before_emoji_index.pkl',
-    #     evaluate=baseline,
-    #     hyperparameters=dict(),
-    #     balance_dataset=False,
-    #     parallel=True
-    # ),
+    dict(
+        name='baseline',
+        data_preprocessing=baseline_data,
+        data_file='word_before_emoji_index.pkl',
+        evaluate=baseline,
+        hyperparameters=dict(),
+        balance_dataset=False,
+        parallel=True
+    ),
     # dict(
     #     name='one_gram',
     #     data_preprocessing=one_gram_data,
@@ -185,8 +185,8 @@ if __name__ == '__main__':
 
                 results_dict = dict(results_dict)
         else:
+            results_dict = {}
             for i, (train_index, test_index) in enumerate(cv.split(np.zeros(X.shape[0]), np.zeros(y.shape[0]))):
-                results_dict = {}
                 if isinstance(X, np.ndarray):
                     X_train, X_test = X[train_index], X[test_index]
                     y_train, y_test = y[train_index], y[test_index]
