@@ -15,33 +15,33 @@ from models.classic_ml_models import basic_ml_data, train_rf, train_svm, train_k
     train_gaussian_process
 
 parameters = [
-    dict(
-        name='baseline',
-        data_preprocessing=baseline_data,
-        data_file='word_before_emoji_index.pkl',
-        evaluate=baseline,
-        hyperparameters=dict(),
-        balance_dataset=False,
-        parallel=True
-    ),
-    dict(
-        name='one_gram',
-        data_preprocessing=one_gram_data,
-        data_file='word_before_emoji_index.pkl',
-        evaluate=one_gram,
-        hyperparameters=dict(),
-        balance_dataset=False,
-        parallel=True
-    ),
-    dict(
-        name='four_gram',
-        data_preprocessing=four_gram_data,
-        data_file='words_around_emoji_index.pkl',
-        evaluate=four_gram,
-        hyperparameters=dict(),
-        balance_dataset=False,
-        parallel=True
-    ),
+    # dict(
+    #     name='baseline',
+    #     data_preprocessing=baseline_data,
+    #     data_file='word_before_emoji_index.pkl',
+    #     evaluate=baseline,
+    #     hyperparameters=dict(),
+    #     balance_dataset=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='one_gram',
+    #     data_preprocessing=one_gram_data,
+    #     data_file='word_before_emoji_index.pkl',
+    #     evaluate=one_gram,
+    #     hyperparameters=dict(),
+    #     balance_dataset=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='four_gram',
+    #     data_preprocessing=four_gram_data,
+    #     data_file='words_around_emoji_index.pkl',
+    #     evaluate=four_gram,
+    #     hyperparameters=dict(),
+    #     balance_dataset=False,
+    #     parallel=True
+    # ),
     dict(
         name='random_forest',
         data_preprocessing=basic_ml_data,
@@ -168,8 +168,11 @@ if __name__ == '__main__':
                         X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
                         y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
 
+                    print("Loaded data, fold", i)
+
                     if parameter_dict['balance_dataset']:
                         X_train, y_train = balance_multiclass_dataset(X_train, y_train)
+                        print("Balanced data, fold", i)
                     parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
 
                     p = Process(target=parameter_dict["evaluate"], args=(
@@ -191,11 +194,16 @@ if __name__ == '__main__':
                     X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
                     y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
 
+                print("Loaded data, fold", i)
+
                 if parameter_dict['balance_dataset']:
                     X_train, y_train = balance_multiclass_dataset(X_train, y_train)
+                    print("Balanced data, fold", i)
+
                 parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
                 parameter_dict['evaluate'](i, X_train, y_train, X_test, y_test, results_dict,
                                            parameter_dict['hyperparameters'])
+                print("Evaluated model on data, fold", i)
 
         for val in results_dict.values():
             results[parameter_dict['name']].append(val)

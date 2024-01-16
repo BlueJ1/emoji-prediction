@@ -23,18 +23,15 @@ def basic_ml_data(df):
     expanded_df = df.apply(lambda row: pd.Series(row['words']), axis=1)
 
     # Drop the original array_column
-    df = df.drop('words', axis=1)
+    # df = df.drop('words', axis=1)
 
     # Concatenate the expanded columns with the original DataFrame
-    result_df = pd.concat([df, expanded_df], axis=1)
+    # result_df = pd.concat([df, expanded_df], axis=1)
 
-    X = result_df.iloc[:, 49:].values
-    y = result_df.iloc[:, :49].values
+    X = expanded_df.values
+    y = df.iloc[:, 1:].values
     y = np.argmax(y, axis=1)
 
-    # print(X.shape, y.shape)
-    # print(X)
-    # print(y)
     return X, y
 
 

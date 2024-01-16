@@ -22,13 +22,14 @@ def four_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
     with open(emoji_path, 'r', encoding='utf-8') as f:
         emoji_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 
-    unique_4_grams = set(X_train)
-    print(f'{len(unique_4_grams)} unique 4-grams in data')
+    # unique_4_grams = set(X_train)
+    # print(f'{len(unique_4_grams)} unique 4-grams in data')
 
     unique_emojis, counts = np.unique(y_train, return_counts=True)
     most_common_emoji = unique_emojis[np.argmax(counts)]
 
     four_gram_dict = {}
+    print('Creating 4-gram dictionary')
     for words, emoji in tqdm(zip(X_train, y_train)):
         if words in four_gram_dict:
             four_gram_dict[words][emoji] += 1
@@ -37,9 +38,11 @@ def four_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
             four_gram_dict[words][emoji] += 1
 
     # select argmax for each row
-    for key, value in tqdm(four_gram_dict.items()):
+    for key, value in four_gram_dict.items():
         four_gram_dict[key] = np.argmax(value)
 
+    # make predictions
+    print('Making predictions')
     predictions = []
     for words in X_test:
         if words not in four_gram_dict:
