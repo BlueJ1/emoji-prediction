@@ -2,6 +2,9 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from models.four_gram_class import FourGram
 from models.evaluate_predictions import evaluate_predictions
 

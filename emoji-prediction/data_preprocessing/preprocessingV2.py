@@ -98,10 +98,9 @@ def generate_sequence_dataframe(df: pd.DataFrame, word_to_embedding: dict, idx_t
     for t, row in df.iterrows():
         emoji_ix: np.ndarray = np.nonzero(row['sequence_emojis'])[0]
         words = np.array([word_to_embedding[idx_to_word[word]] for word in row['sequence_words']])
-        emojis = row['sequence_emojis'][emoji_ix]
         if emoji_ix.size > 0:
             for ix in emoji_ix:
-                new_words = np.insert(words, ix + 1, token)  # TODO: Why was there an ix + i here?
+                new_words = np.insert(words, ix + 1, token)
                 sequence.append((new_words, ))
 
     df_sequence = pd.DataFrame(sequence, columns=['word_sequence', 'emojis'])

@@ -1,24 +1,27 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
 import tensorflow as tf
-from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
 from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, f1_score, balanced_accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+
+
 def basic_ml_data(df):
     expanded_df = df.apply(lambda row: pd.Series(row['words']), axis=1)
 
+    # Drop the original array_column
+    df = df.drop('words', axis=1)
+
     # Concatenate the expanded columns with the original DataFrame
     result_df = pd.concat([df, expanded_df], axis=1)
-
-    # Drop the original array_column
-    result_df = result_df.drop('words', axis=1)
 
     X = result_df.iloc[:, 49:].values
     y = result_df.iloc[:, :49].values
@@ -29,6 +32,7 @@ def basic_ml_data(df):
     print(y)
     return X, y
 
+
 def setup_gpu(gpu_id):
     gpus = tf.config.experimental.list_physical_devices('GPU')
     if gpus:
@@ -37,6 +41,8 @@ def setup_gpu(gpu_id):
             tf.config.experimental.set_memory_growth(gpus[gpu_id], True)
         except RuntimeError as e:
             print(e)
+
+
 def train_rf(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
     gpu_id = hyperparameters['gpu_id']
     if gpu_id >= 0:
@@ -49,15 +55,16 @@ def train_rf(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperp
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = RandomForestClassifier(n_estimators=n_estimators)
+    model = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
-    evaluation =  {'accuracy' : accuracy_score(y_test, y_pred),
-                   'balanced_accuracy': balanced_accuracy_score(y_test, y_pred),
-                   'f1': f1_score(y_test, y_pred, average='weighted')}
+    evaluation = {'accuracy': accuracy_score(y_test, y_pred),
+                  'balanced_accuracy': balanced_accuracy_score(y_test, y_pred),
+                  'f1': f1_score(y_test, y_pred, average='weighted')}
 
     results_dict[fold_number] = evaluation
+
 
 def train_svm(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
     gpu_id = hyperparameters['gpu_id']
@@ -82,6 +89,7 @@ def train_svm(fold_number, X_train, y_train, X_test, y_test, results_dict, hyper
 
     results_dict[fold_number] = evaluation
 
+
 def train_gaussian_process(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
     gpu_id = hyperparameters['gpu_id']
     if gpu_id >= 0:
@@ -94,7 +102,7 @@ def train_gaussian_process(fold_number, X_train, y_train, X_test, y_test, result
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = GaussianProcessClassifier(n_restarts_optimizer=n_restarts, max_iter_predict=max_iter_pred)
+    model = GaussianProcessClassifier(n_restarts_optimizer=n_restarts, max_iter_predict=max_iter_pred, n_jobs=-1)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
@@ -103,6 +111,7 @@ def train_gaussian_process(fold_number, X_train, y_train, X_test, y_test, result
                   'f1': f1_score(y_test, y_pred, average='weighted')}
 
     results_dict[fold_number] = evaluation
+
 
 def train_k_nbh(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
     gpu_id = hyperparameters['gpu_id']
@@ -116,7 +125,7 @@ def train_k_nbh(fold_number, X_train, y_train, X_test, y_test, results_dict, hyp
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = KNeighborsClassifier(n_neighbors=num_neighbors)
+    model = KNeighborsClassifier(n_neighbors=num_neighbors, n_jobs=-1)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
@@ -125,6 +134,7 @@ def train_k_nbh(fold_number, X_train, y_train, X_test, y_test, results_dict, hyp
                   'f1': f1_score(y_test, y_pred, average='weighted')}
 
     results_dict[fold_number] = evaluation
+
 
 def train_naive_bayes(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
     gpu_id = hyperparameters['gpu_id']
@@ -146,6 +156,7 @@ def train_naive_bayes(fold_number, X_train, y_train, X_test, y_test, results_dic
 
     results_dict[fold_number] = evaluation
 
+
 def train_log_reg(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
     gpu_id = hyperparameters['gpu_id']
     if gpu_id >= 0:
@@ -156,7 +167,7 @@ def train_log_reg(fold_number, X_train, y_train, X_test, y_test, results_dict, h
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = LogisticRegression()
+    model = LogisticRegression(n_jobs=-1)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
@@ -165,6 +176,13 @@ def train_log_reg(fold_number, X_train, y_train, X_test, y_test, results_dict, h
                   'f1': f1_score(y_test, y_pred, average='weighted')}
 
     results_dict[fold_number] = evaluation
+
+
+def nb_data(df):
+    X = np.stack(df['words'].values)
+    y = df['emoji'].values
+    return X, y
+
 
 if __name__ == "__main__":
     data_path = Path(__file__).parent.parent / 'data'
@@ -175,37 +193,42 @@ if __name__ == "__main__":
     # print(df.columns)
     # print max length of words
     X, y = basic_ml_data(df)
+    # X, y = nb_data(df)
+    # print(X.shape)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Gaussian Naive Bayes
-    clf = GaussianNB()
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    classification_rep = classification_report(y_test, y_pred)
+    gnb = GaussianNB()
+    gnb.fit(X_train, y_train)
+    gnb_y_pred = gnb.predict(X_test)
+    gnb_accuracy = accuracy_score(y_test, gnb_y_pred)
+    gnb_rf_f1 = f1_score(y_test, gnb_y_pred, average='weighted')
+    classification_rep = classification_report(y_test, gnb_y_pred)
     print("Naive Bayes:")
-    print(f"Accuracy: {accuracy}")
+    print(f"Accuracy: {gnb_accuracy}")
+    print("F1 Score: ", gnb_rf_f1)
     print("Classification Report:\n", classification_rep)
 
+    del gnb
 
-    # SVM with RBF Kernel
-    svm_classifier = SVC(kernel='rbf')
-    svm_classifier.fit(X_train, y_train)
-    svm_y_pred = svm_classifier.predict(X_test)
-    svm_accuracy = accuracy_score(y_test, svm_y_pred)
-    svm_classification_rep = classification_report(y_test, svm_y_pred)
-    print("\nSVM with RBF Kernel:")
-    print(f"Accuracy: {svm_accuracy}")
-    print("Classification Report:\n", svm_classification_rep)
-
+    # # SVM with RBF Kernel
+    # svm_classifier = SVC(kernel='rbf')
+    # svm_classifier.fit(X_train, y_train)
+    # svm_y_pred = svm_classifier.predict(X_test)
+    # svm_accuracy = accuracy_score(y_test, svm_y_pred)
+    # svm_classification_rep = classification_report(y_test, svm_y_pred)
+    # print("\nSVM with RBF Kernel:")
+    # print(f"Accuracy: {svm_accuracy}")
+    # print("Classification Report:\n", svm_classification_rep)
 
     # Random Forest
-    rf_classifier = RandomForestClassifier()
+    rf_classifier = RandomForestClassifier(n_estimators=100, n_jobs=-1)
     rf_classifier.fit(X_train, y_train)
     rf_y_pred = rf_classifier.predict(X_test)
     rf_accuracy = accuracy_score(y_test, rf_y_pred)
+    rf_f1 = f1_score(y_test, rf_y_pred, average='weighted')
     rf_classification_rep = classification_report(y_test, rf_y_pred)
     print("Random Forest:")
     print(f"Accuracy: {rf_accuracy}")
+    print(f"F1 Score: {rf_f1}")
     print("Classification Report:\n", rf_classification_rep)
-
