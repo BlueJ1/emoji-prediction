@@ -199,7 +199,8 @@ if __name__ == '__main__':
 
         for val in results_dict.values():
             results[parameter_dict['name']].append(val)
-        print(results)
+        print(f"Weighted F1 score of {parameter_dict['name']}: "
+              f"{np.average([results_dict[i]['weighted_f1_score'] for i in range(k)])}")
 
     # save results
     with open('results.pkl', 'wb') as f:

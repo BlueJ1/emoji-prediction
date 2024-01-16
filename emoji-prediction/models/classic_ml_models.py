@@ -13,6 +13,11 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from models.evaluate_predictions import evaluate_predictions
+
 
 def basic_ml_data(df):
     expanded_df = df.apply(lambda row: pd.Series(row['words']), axis=1)
@@ -27,9 +32,9 @@ def basic_ml_data(df):
     y = result_df.iloc[:, :49].values
     y = np.argmax(y, axis=1)
 
-    print(X.shape, y.shape)
-    print(X)
-    print(y)
+    # print(X.shape, y.shape)
+    # print(X)
+    # print(y)
     return X, y
 
 
@@ -59,11 +64,7 @@ def train_rf(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperp
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
-    evaluation = {'accuracy': accuracy_score(y_test, y_pred),
-                  'balanced_accuracy': balanced_accuracy_score(y_test, y_pred),
-                  'f1': f1_score(y_test, y_pred, average='weighted')}
-
-    results_dict[fold_number] = evaluation
+    results_dict[fold_number] = evaluate_predictions(y_pred, y_test)
 
 
 def train_svm(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
@@ -83,11 +84,7 @@ def train_svm(fold_number, X_train, y_train, X_test, y_test, results_dict, hyper
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
-    evaluation = {'accuracy': accuracy_score(y_test, y_pred),
-                  'balanced_accuracy': balanced_accuracy_score(y_test, y_pred),
-                  'f1': f1_score(y_test, y_pred, average='weighted')}
-
-    results_dict[fold_number] = evaluation
+    results_dict[fold_number] = evaluate_predictions(y_pred, y_test)
 
 
 def train_gaussian_process(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
@@ -106,11 +103,7 @@ def train_gaussian_process(fold_number, X_train, y_train, X_test, y_test, result
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
-    evaluation = {'accuracy': accuracy_score(y_test, y_pred),
-                  'balanced_accuracy': balanced_accuracy_score(y_test, y_pred),
-                  'f1': f1_score(y_test, y_pred, average='weighted')}
-
-    results_dict[fold_number] = evaluation
+    results_dict[fold_number] = evaluate_predictions(y_pred, y_test)
 
 
 def train_k_nbh(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
@@ -129,11 +122,7 @@ def train_k_nbh(fold_number, X_train, y_train, X_test, y_test, results_dict, hyp
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
-    evaluation = {'accuracy': accuracy_score(y_test, y_pred),
-                  'balanced_accuracy': balanced_accuracy_score(y_test, y_pred),
-                  'f1': f1_score(y_test, y_pred, average='weighted')}
-
-    results_dict[fold_number] = evaluation
+    results_dict[fold_number] = evaluate_predictions(y_pred, y_test)
 
 
 def train_naive_bayes(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
@@ -150,11 +139,7 @@ def train_naive_bayes(fold_number, X_train, y_train, X_test, y_test, results_dic
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
-    evaluation = {'accuracy': accuracy_score(y_test, y_pred),
-                  'balanced_accuracy': balanced_accuracy_score(y_test, y_pred),
-                  'f1': f1_score(y_test, y_pred, average='weighted')}
-
-    results_dict[fold_number] = evaluation
+    results_dict[fold_number] = evaluate_predictions(y_pred, y_test)
 
 
 def train_log_reg(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
@@ -171,11 +156,7 @@ def train_log_reg(fold_number, X_train, y_train, X_test, y_test, results_dict, h
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
-    evaluation = {'accuracy': accuracy_score(y_test, y_pred),
-                  'balanced_accuracy': balanced_accuracy_score(y_test, y_pred),
-                  'f1': f1_score(y_test, y_pred, average='weighted')}
-
-    results_dict[fold_number] = evaluation
+    results_dict[fold_number] = evaluate_predictions(y_pred, y_test)
 
 
 def nb_data(df):
