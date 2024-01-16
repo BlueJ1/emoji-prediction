@@ -13,7 +13,7 @@
 - [X] Overleaf document outlining what we have done so far and what we are planning to do/improve + include contributions __everyone__
 - [x] Address the class imbalance (data augmentation) __Wojtek__
 - [x] Make API documentation __Laura__
-- [x] Work on MLP __Laura__
+- [x] Work on MLP __Wojtek__
 - [x] Figure out the data for sequence models (insert special token at position to predict emoji, use zero-vector as embedding for that token) __Wojtek__
 - [x] Compute confusion matrices  __Lennart__
 - [ ] Evaluate MLP  __Laura__
