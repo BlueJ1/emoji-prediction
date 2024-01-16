@@ -17,11 +17,10 @@
 - [x] Figure out the data for sequence models (insert special token at position to predict emoji, use zero-vector as embedding for that token) __Wojtek__
 - [x] Compute confusion matrices  __Lennart__
 - [ ] Evaluate MLP  __Laura__
-- [ ] Bayesian Model and Decision Tree (maybe random forest) __Wojtek__
-- [ ] SVM and Logistic Regression __Laura__
+- [x] Bayesian Model, Decision Tree (maybe random forest), K-Neighbors, Logistic Regression, SVM, Gaussian Process __Wojtek__
 - [ ] Build LSTM __Lennart__
 - [ ] Build Attention-based model __Lennart__
-- [ ] Deploy the model to API __Lennart__
+- [x] Deploy the model to API __Lennart__
 - [ ] Optimize the hyperparameters __Lennart__
 
 ## Data
