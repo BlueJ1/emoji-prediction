@@ -11,6 +11,7 @@ from models.one_gram import one_gram, one_gram_data
 from models.baseline import baseline, baseline_data
 from models.mlp_unified import mlp_data, train_fold
 from balance_dataset import balance_multiclass_dataset
+from models.classic_ml_models import basic_ml_data, train_rf, train_svm, train_k_nbh,train_naive_bayes, train_log_reg, train_gaussian_process
 
 parameters = [
     # dict(
@@ -41,50 +42,100 @@ parameters = [
     #     parallel=True
     # ),
     dict(
-        name='mlp_concat',
-        data_preprocessing=mlp_data,
+        name='random_forest',
+        data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_fold,
-        hyperparameters=dict(input_dim=200,
-                             output_dim=49,
-                             lr=1e-4,
-                             num_epochs=20,
-                             batch_size=1024,
-                             gpu_id=0),
+        evaluate=train_rf,
+        hyperparameters=dict(n_estimators=100),
         mlp=True,
         balance_dataset=False,
         parallel=True
     ),
     dict(
-        name='mlp_concat',
-        data_preprocessing=mlp_data,
+        name='gaussian_process',
+        data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_fold,
-        hyperparameters=dict(input_dim=200,
-                             output_dim=49,
-                             lr=1e-4,
-                             num_epochs=20,
-                             batch_size=1024,
-                             gpu_id=0),
+        evaluate=train_gaussian_process,
+        hyperparameters=dict(n_restarts = 0, max_iter_pred = 100),
         mlp=True,
-        balance_dataset=True,
+        balance_dataset=False,
         parallel=True
     ),
     dict(
-        name='mlp_sum',
-        data_preprocessing=mlp_data,
-        data_file='word_around_emoji_sum_of_embeddings.pkl',
-        evaluate=train_fold,
-        hyperparameters=dict(input_dim=50,
-                             output_dim=49,
-                             lr=1e-5,
-                             num_epochs=1000,
-                             batch_size=2048,
-                             gpu_id=0),
+        name='k_neighbors',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_k_nbh,
+        hyperparameters=dict(num_neighbors = 3),
         mlp=True,
-        balance_dataset=True,
+        balance_dataset=False,
         parallel=True
-    )
+    ),
+    dict(
+        name='naive_bayes',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_naive_bayes,
+        hyperparameters=dict(),
+        mlp=True,
+        balance_dataset=False,
+        parallel=True
+    ),
+    dict(
+        name='logistic_regression',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_log_reg,
+        hyperparameters=dict(),
+        mlp=True,
+        balance_dataset=False,
+        parallel=True
+    ),
+    # dict(
+    #     name='mlp_concat',
+    #     data_preprocessing=mlp_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_fold,
+    #     hyperparameters=dict(input_dim=200,
+    #                          output_dim=49,
+    #                          lr=1e-4,
+    #                          num_epochs=20,
+    #                          batch_size=1024,
+    #                          gpu_id=0),
+    #     mlp=True,
+    #     balance_dataset=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='mlp_concat',
+    #     data_preprocessing=mlp_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_fold,
+    #     hyperparameters=dict(input_dim=200,
+    #                          output_dim=49,
+    #                          lr=1e-4,
+    #                          num_epochs=20,
+    #                          batch_size=1024,
+    #                          gpu_id=0),
+    #     mlp=True,
+    #     balance_dataset=True,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='mlp_sum',
+    #     data_preprocessing=mlp_data,
+    #     data_file='word_around_emoji_sum_of_embeddings.pkl',
+    #     evaluate=train_fold,
+    #     hyperparameters=dict(input_dim=50,
+    #                          output_dim=49,
+    #                          lr=1e-5,
+    #                          num_epochs=1000,
+    #                          batch_size=2048,
+    #                          gpu_id=0),
+    #     mlp=True,
+    #     balance_dataset=True,
+    #     parallel=True
+    # )
 ]
 
 
@@ -150,12 +201,13 @@ if __name__ == '__main__':
 
                 if parameter_dict['balance_dataset']:
                     X_train, y_train = balance_multiclass_dataset(X_train, y_train)
-                parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus
+                parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
                 parameter_dict['evaluate'](i, X_train, y_train, X_test, y_test, results_dict,
                                            parameter_dict['hyperparameters'])
 
         for val in results_dict.values():
             results[parameter_dict['name']].append(val)
+        print(results)
 
     # save results
     with open('results.pkl', 'wb') as f:
