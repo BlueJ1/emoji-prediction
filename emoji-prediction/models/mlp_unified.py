@@ -114,7 +114,7 @@ def mlp_data(df):
 
     X = tf.cast(X, tf.float32)
     y = tf.cast(y, tf.float32)
-    print(X.shape, y.shape)
+    # print(X.shape, y.shape)
     print(X)
     print(y)
     return X, y
