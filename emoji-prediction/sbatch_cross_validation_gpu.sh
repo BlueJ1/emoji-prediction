@@ -20,4 +20,4 @@ end=$(date +%s)
 duration=$((end - start))
 echo "Copying took $duration seconds."
 
-python $TMPDIR/ep/cross_validation.py nn
+python $TMPDIR/ep/cross_validation.py nn test
