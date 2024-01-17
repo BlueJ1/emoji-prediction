@@ -12,7 +12,7 @@ from models.baseline import baseline, baseline_data
 from models.mlp_unified import mlp_data, train_fold
 from balance_dataset import balance_multiclass_dataset
 from models.classic_ml_models import basic_ml_data, train_rf, train_svm, train_k_nbh, train_naive_bayes, train_log_reg, \
-    train_gaussian_process
+    train_qda
 
 parameters = [
     dict(
@@ -24,39 +24,39 @@ parameters = [
         balance_dataset=False,
         parallel=True
     ),
-    # dict(
-    #     name='one_gram',
-    #     data_preprocessing=one_gram_data,
-    #     data_file='word_before_emoji_index.pkl',
-    #     evaluate=one_gram,
-    #     hyperparameters=dict(),
-    #     balance_dataset=False,
-    #     parallel=True
-    # ),
-    # dict(
-    #     name='four_gram',
-    #     data_preprocessing=four_gram_data,
-    #     data_file='words_around_emoji_index.pkl',
-    #     evaluate=four_gram,
-    #     hyperparameters=dict(),
-    #     balance_dataset=False,
-    #     parallel=True
-    # ),
     dict(
-        name='random_forest',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=100),
+        name='one_gram',
+        data_preprocessing=one_gram_data,
+        data_file='word_before_emoji_index.pkl',
+        evaluate=one_gram,
+        hyperparameters=dict(),
         balance_dataset=False,
-        parallel=False
+        parallel=True
     ),
     dict(
-        name='gaussian_process',
+        name='four_gram',
+        data_preprocessing=four_gram_data,
+        data_file='words_around_emoji_index.pkl',
+        evaluate=four_gram,
+        hyperparameters=dict(),
+        balance_dataset=False,
+        parallel=True
+    ),
+    # dict(
+    #     name='random_forest',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_rf,
+    #     hyperparameters=dict(n_estimators=100),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    dict(
+        name='Quadrant Discriminant Analysis',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_gaussian_process,
-        hyperparameters=dict(n_restarts=0, max_iter_pred=100),
+        evaluate=train_qda,
+        hyperparameters=dict(),
         balance_dataset=False,
         parallel=False
     ),
@@ -87,6 +87,15 @@ parameters = [
         balance_dataset=False,
         parallel=False
     ),
+    dict(
+        name='svm',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_svm,
+        hyperparameters=dict(),
+        balance_dataset=False,
+        parallel=False
+    )
     # dict(
     #     name='mlp_concat',
     #     data_preprocessing=mlp_data,

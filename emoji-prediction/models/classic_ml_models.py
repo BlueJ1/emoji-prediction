@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, f1_score, balanced_accuracy_score
 from sklearn.model_selection import train_test_split
@@ -84,19 +84,17 @@ def train_svm(fold_number, X_train, y_train, X_test, y_test, results_dict, hyper
     results_dict[fold_number] = evaluate_predictions(y_pred, y_test)
 
 
-def train_gaussian_process(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
+def train_qda(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
     gpu_id = hyperparameters['gpu_id']
     if gpu_id >= 0:
         setup_gpu(gpu_id)
 
-    n_restarts = hyperparameters['n_restarts']
-    max_iter_pred = hyperparameters['max_iter_pred']
     # Standardize the features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = GaussianProcessClassifier(n_restarts_optimizer=n_restarts, max_iter_predict=max_iter_pred, n_jobs=-1)
+    model = QuadraticDiscriminantAnalysis()
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
