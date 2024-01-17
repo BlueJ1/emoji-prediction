@@ -53,15 +53,16 @@ def train_rf(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperp
 
 
 def train_svm(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
-    tol = hyperparameters['tol']
+    kernel = hyperparameters['kernel']
     C = hyperparameters['C']
+    tol = hyperparameters['tol']
 
     # Standardize the features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = SVC(kernel='rbf', C=C, tol=tol, max_iter=10000)
+    model = SVC(kernel=kernel, C=C, tol=tol, max_iter=30000, cache_size=2000)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 

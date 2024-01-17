@@ -33,6 +33,24 @@ parameters = [
         parallel=True
     ),
     dict(
+        name='random_forest500GiniLog2',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_rf,
+        hyperparameters=dict(n_estimators=500, criterion='gini', max_features='log2'),
+        balance_dataset=False,
+        parallel=False
+    ),
+    dict(
+        name='random_forest500EntropySqrt',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_rf,
+        hyperparameters=dict(n_estimators=500, criterion='entropy', max_features='sqrt'),
+        balance_dataset=False,
+        parallel=False
+    ),
+    dict(
         name='random_forest100GiniSqrt',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
@@ -56,24 +74,6 @@ parameters = [
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_rf,
         hyperparameters=dict(n_estimators=30, criterion='entropy', max_features='sqrt'),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='random_forest500GiniLog2',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=500, criterion='gini', max_features='log2'),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='random_forest500EntropySqrt',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=500, criterion='entropy', max_features='sqrt'),
         balance_dataset=False,
         parallel=False
     ),
@@ -150,39 +150,88 @@ parameters = [
         parallel=False
     ),
     dict(
-        name='svmC1.0tol1e-3',
+        name='svmRBFC1.0tol1e-3',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_svm,
-        hyperparameters=dict(C=1.0, tol=1e-3),
+        hyperparameters=dict(kernel="rbf", C=1.0, tol=1e-3),
         balance_dataset=False,
         parallel=True
     ),
     dict(
-        name='svmC0.1tol1e-3',
+        name='svmPolyC0.5tol1e-3',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_svm,
-        hyperparameters=dict(C=0.1, tol=1e-3),
+        hyperparameters=dict(kernel="poly", C=0.5, tol=1e-3),
         balance_dataset=False,
         parallel=True
     ),
     dict(
-        name='svmC0.01tol1e-3',
+        name='svmPolyC0.1tol2e-4',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_svm,
-        hyperparameters=dict(C=0.01, tol=1e-3),
+        hyperparameters=dict(kernel="poly", C=0.1, tol=2e-4),
         balance_dataset=False,
         parallel=True
     ),
     dict(
-        name='svmC0.5tol1e-4',
+        name='svmRBFC0.1tol1e-3',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_svm,
-        hyperparameters=dict(C=0.5, tol=1e-4),
+        hyperparameters=dict(kernel="rbf", C=0.1, tol=1e-3),
+        balance_dataset=False,
+        parallel=True
+    ),
+    dict(
+        name='svmRBFC0.01tol1e-3',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_svm,
+        hyperparameters=dict(kernel="rbf", C=0.01, tol=1e-3),
+        balance_dataset=False,
+        parallel=True
+    ),
+    dict(
+        name='svmRBFC0.5tol1e-4',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_svm,
+        hyperparameters=dict(kernel="rbf", C=0.5, tol=1e-4),
+        balance_dataset=False,
+        parallel=True
+    ),
+    dict(
+        name='svmRBFC0.1tol1e-4',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_svm,
+        hyperparameters=dict(kernel="rbf", C=0.1, tol=1e-4),
+        balance_dataset=False,
+        parallel=True
+    ),
+    dict(
+        name='svmSigmoidC0.01tol1e-3',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_svm,
+        hyperparameters=dict(kernel="sigmoid", C=0.01, tol=1e-3),
+        balance_dataset=False,
+        parallel=True
+    ),
+    dict(
+        name='svmSigmoidC0.7tol7e-4',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_svm,
+        hyperparameters=dict(kernel="sigmoid", C=0.7, tol=7e-4),
         balance_dataset=False,
         parallel=True
     ),
 ]
+
+
+if __name__ == '__main__':
+    print(len(parameters))
