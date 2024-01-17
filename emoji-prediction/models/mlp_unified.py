@@ -35,15 +35,16 @@ class TqdmMetricsProgressBarCallback(Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         loss = logs.get('loss')
-        acc = logs.get('accuracy', 0) * 100  # Convert to percentage
+        acc = logs.get('accuracy', 0)  # Accuracy
         f1_score = logs.get('f1_score', 0)  # F1 score
 
         if self.validation_data and (epoch + 1) % self.eval_interval == 0:
-            self.val_loss, self.val_acc, self.val_f1_score = (
-                self.model.evaluate(self.validation_data[0], self.validation_data[1], verbose=0, batch_size=4096))
-        self.progress_bar.set_postfix_str(f"Loss: {loss:.2f}, Accuracy: {acc:.2f}%, F1 Score: {f1_score:.2f}, "
-                                          f"Val Loss: {self.val_loss:.2f}, Val Accuracy: {self.val_acc:.2f}%, "
-                                          f"Val F1 Score: {self.val_f1_score:.2f}")
+            self.val_loss, self.val_f1_score, self.val_acc = (
+                self.model.evaluate(self.validation_data[0], self.validation_data[1], verbose=0, batch_size=1024))
+        self.progress_bar.set_postfix_str(f"Loss: {loss:.2f}, Accuracy: {acc * 100:.2f}%, "
+                                          f"F1 Score: {f1_score * 100:.2f}%, "
+                                          f"Val Loss: {self.val_loss:.2f}, Val Accuracy: {self.val_acc * 100:.2f}%, "
+                                          f"Val F1 Score: {self.val_f1_score * 100:.2f}%")
         self.progress_bar.update(1)
 
     def on_train_end(self, logs=None):
@@ -95,7 +96,7 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
                         callbacks=[tqdm_callback])
     # Evaluate the model on the validation data
     evaluation = model.evaluate(
-        X_test, y_test, verbose=1, batch_size=2 * batch_size)
+        X_test, y_test, verbose=1, batch_size=batch_size)
 
     results_dict[fold_number] = evaluation
 
