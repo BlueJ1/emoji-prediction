@@ -37,13 +37,15 @@ def basic_ml_data(df):
 
 def train_rf(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
     n_estimators = hyperparameters['n_estimators']
+    criterion = hyperparameters['criterion']
+    max_features = hyperparameters['max_features']
 
     # Standardize the features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = RandomForestClassifier(n_estimators=n_estimators, n_jobs=-1)
+    model = RandomForestClassifier(n_estimators=n_estimators, criterion=criterion, max_features=max_features, n_jobs=-1)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
