@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --gpus-per-node=v100:1
 #SBATCH --mem=124G
-#SBATCH --cpus-per-task=5
+#SBATCH --cpus-per-task=2
 
 deactivate
 module purge
@@ -15,7 +15,7 @@ which python
 python -V
 
 start=$(date +%s)
-cp -r /scratch/s4776380/emoji-prediction/emoji-prediction/ $TMPDIR/ep/
+cp -r /scratch/$USER/emoji-prediction/emoji-prediction/ $TMPDIR/ep/
 end=$(date +%s)
 duration=$((end - start))
 echo "Copying took $duration seconds."

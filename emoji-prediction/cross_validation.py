@@ -14,15 +14,15 @@ def main(run_id, parameters):
     # k-fold cross validation
     k = 5
     results = {}
-    num_gpus = len(tf.config.experimental.list_physical_devices('GPU'))
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    if gpus:
-        try:
-            for gpu in gpus:
-                tf.config.experimental.set_memory_growth(gpu, True)
-
-        except RuntimeError as e:
-            print(e)
+    # num_gpus = len(tf.config.experimental.list_physical_devices('GPU'))
+    # gpus = tf.config.experimental.list_physical_devices('GPU')
+    # if gpus:
+    #     try:
+    #         for gpu in gpus:
+    #             tf.config.experimental.set_memory_growth(gpu, True)
+    #
+    #     except RuntimeError as e:
+    #         print(e)
 
     for parameter_dict in parameters:
         print(f'Running {parameter_dict["name"]} model')
@@ -52,7 +52,7 @@ def main(run_id, parameters):
                     if parameter_dict['balance_dataset']:
                         X_train, y_train = balance_multiclass_dataset(X_train, y_train)
                         # print("Balanced data, fold", i)
-                    parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
+                    # parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
 
                     p = Process(target=parameter_dict["evaluate"], args=(
                         i, X_train, y_train, X_test, y_test, results_dict, parameter_dict['hyperparameters']))
@@ -79,7 +79,7 @@ def main(run_id, parameters):
                     X_train, y_train = balance_multiclass_dataset(X_train, y_train)
                     # print("Balanced data, fold", i)
 
-                parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
+                # parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
                 parameter_dict['evaluate'](i, X_train, y_train, X_test, y_test, results_dict,
                                            parameter_dict['hyperparameters'])
                 # print("Evaluated model on data, fold", i)

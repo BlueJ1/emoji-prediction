@@ -51,12 +51,12 @@ class TqdmMetricsProgressBarCallback(Callback):
 
 
 def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
-    gpu_id = hyperparameters['gpu_id']
-    if gpu_id >= 0:
-        setup_gpu(gpu_id)
+    # gpu_id = hyperparameters['gpu_id']
+    # if gpu_id >= 0:
+    #     setup_gpu(gpu_id)
 
     input_dim = hyperparameters['input_dim']
-    output_dim = hyperparameters['output_dim']
+    output_dim = 49
     learning_rate = hyperparameters['lr']
     num_epochs = hyperparameters['num_epochs']
     batch_size = hyperparameters['batch_size']

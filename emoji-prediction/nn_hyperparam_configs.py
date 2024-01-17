@@ -7,13 +7,12 @@ parameters = [
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_fold,
         hyperparameters=dict(input_dim=200,
-                             output_dim=49,
                              lr=1e-4,
-                             num_epochs=20,
-                             batch_size=1024,
+                             num_epochs=50,
+                             batch_size=2048,
                              gpu_id=0),
         balance_dataset=False,
-        parallel=True
+        parallel=False
     ),
     dict(
         name='mlp_concat',
@@ -21,13 +20,12 @@ parameters = [
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_fold,
         hyperparameters=dict(input_dim=200,
-                             output_dim=49,
                              lr=1e-4,
-                             num_epochs=20,
-                             batch_size=1024,
+                             num_epochs=50,
+                             batch_size=2048,
                              gpu_id=0),
         balance_dataset=True,
-        parallel=True
+        parallel=False
     ),
     dict(
         name='mlp_sum',
@@ -35,12 +33,11 @@ parameters = [
         data_file='word_around_emoji_sum_of_embeddings.pkl',
         evaluate=train_fold,
         hyperparameters=dict(input_dim=50,
-                             output_dim=49,
                              lr=1e-5,
-                             num_epochs=1000,
-                             batch_size=2048,
+                             num_epochs=100,
+                             batch_size=4096,
                              gpu_id=0),
         balance_dataset=True,
-        parallel=True
+        parallel=False
     )
 ]
