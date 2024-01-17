@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --gpus-per-node=v100:1
 #SBATCH --mem=124G
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=5
 
 deactivate
 module purge
@@ -20,4 +20,4 @@ end=$(date +%s)
 duration=$((end - start))
 echo "Copying took $duration seconds."
 
-python $TMPDIR/ep/cross_validation.py
+python $TMPDIR/ep/cross_validation.py nn

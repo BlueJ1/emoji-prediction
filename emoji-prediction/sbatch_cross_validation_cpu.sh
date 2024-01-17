@@ -1,8 +1,9 @@
 #!/bin/bash
+#SBATCH --job-name=cpu_cross_validation
 #SBATCH --time=10:00:00
 #SBATCH --ntasks=1
-#SBATCH --mem=200G
-#SBATCH --cpus-per-task=30
+#SBATCH --mem-per-cpu=4G
+#SBATCH --cpus-per-task=64
 
 deactivate
 module purge
@@ -19,4 +20,4 @@ end=$(date +%s)
 duration=$((end - start))
 echo "Copying took $duration seconds."
 
-python $TMPDIR/ep/cross_validation.py
+python $TMPDIR/ep/cross_validation.py classic_ml

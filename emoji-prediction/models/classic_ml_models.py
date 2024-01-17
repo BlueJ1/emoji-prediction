@@ -35,21 +35,7 @@ def basic_ml_data(df):
     return X, y
 
 
-def setup_gpu(gpu_id):
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    if gpus:
-        try:
-            tf.config.experimental.set_visible_devices(gpus[gpu_id], 'GPU')
-            tf.config.experimental.set_memory_growth(gpus[gpu_id], True)
-        except RuntimeError as e:
-            print(e)
-
-
 def train_rf(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
-    gpu_id = hyperparameters['gpu_id']
-    if gpu_id >= 0:
-        setup_gpu(gpu_id)
-
     n_estimators = hyperparameters['n_estimators']
 
     # Standardize the features
@@ -65,10 +51,6 @@ def train_rf(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperp
 
 
 def train_svm(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
-    gpu_id = hyperparameters['gpu_id']
-    if gpu_id >= 0:
-        setup_gpu(gpu_id)
-
     tol = hyperparameters['tol']
     C = hyperparameters['C']
 
@@ -77,7 +59,7 @@ def train_svm(fold_number, X_train, y_train, X_test, y_test, results_dict, hyper
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = SVC(kernel='rbf', C=C, tol=tol)
+    model = SVC(kernel='rbf', C=C, tol=tol, max_iter=10000)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
@@ -85,10 +67,6 @@ def train_svm(fold_number, X_train, y_train, X_test, y_test, results_dict, hyper
 
 
 def train_qda(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
-    gpu_id = hyperparameters['gpu_id']
-    if gpu_id >= 0:
-        setup_gpu(gpu_id)
-
     # Standardize the features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
@@ -102,10 +80,6 @@ def train_qda(fold_number, X_train, y_train, X_test, y_test, results_dict, hyper
 
 
 def train_k_nbh(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
-    gpu_id = hyperparameters['gpu_id']
-    if gpu_id >= 0:
-        setup_gpu(gpu_id)
-
     num_neighbors = hyperparameters['num_neighbors']
 
     # Standardize the features
@@ -121,10 +95,6 @@ def train_k_nbh(fold_number, X_train, y_train, X_test, y_test, results_dict, hyp
 
 
 def train_naive_bayes(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
-    gpu_id = hyperparameters['gpu_id']
-    if gpu_id >= 0:
-        setup_gpu(gpu_id)
-
     # Standardize the features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
@@ -138,16 +108,16 @@ def train_naive_bayes(fold_number, X_train, y_train, X_test, y_test, results_dic
 
 
 def train_log_reg(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
-    gpu_id = hyperparameters['gpu_id']
-    if gpu_id >= 0:
-        setup_gpu(gpu_id)
+    C = hyperparameters['C']
+    penalty = hyperparameters['penalty']
+    l1_ratio = hyperparameters['l1_ratio']
 
     # Standardize the features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = LogisticRegression(n_jobs=-1)
+    model = LogisticRegression(C=C, penalty=penalty, l1_ratio=l1_ratio, max_iter=10000, n_jobs=-1)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
