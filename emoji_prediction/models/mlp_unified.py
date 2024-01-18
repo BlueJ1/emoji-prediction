@@ -42,7 +42,7 @@ class TqdmMetricsProgressBarCallback(Callback):
 
         if self.validation_data and (epoch + 1) % self.eval_interval == 0:
             self.val_loss, self.val_acc, self.val_f1_score = (
-                self.model.evaluate(self.validation_data[0], self.validation_data[1], verbose=0, batch_size=4096))
+                self.model.evaluate(self.validation_data[0], self.validation_data[1], verbose=0, batch_size=1024))
         self.progress_bar.set_postfix_str(f"Loss: {loss:.2f}, Accuracy: {acc:.2f}%, F1 Score: {f1_score:.2f}, "
                                           f"Val Loss: {self.val_loss:.2f}, Val Accuracy: {self.val_acc:.2f}%, "
                                           f"Val F1 Score: {self.val_f1_score:.2f}")
@@ -65,7 +65,7 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
 
     # Build the MLP model
     model = keras.Sequential([
-        layers.Input(shape=(input_dim,)),  # Assuming 50 features
+        layers.Input(shape=(input_dim,)),
         layers.Dense(512, activation='relu'),
         # layers.Dropout(0.2),  # Adding dropout for regularization
         layers.Dense(256, activation='relu'),
@@ -90,7 +90,7 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     X_test = scaler.transform(X_test)
 
     # Train the model (in silent mode, verbose=0)
-    tqdm_callback = TqdmMetricsProgressBarCallback(num_epochs, validation_data=(X_test, y_test),
+    tqdm_callback = TqdmMetricsProgressBarCallback(num_epochs, validation_data=None,  #(X_test, y_test),
                                                    eval_interval=1)
     history = model.fit(X_train, y_train,
                         epochs=num_epochs, batch_size=batch_size, verbose=0,
