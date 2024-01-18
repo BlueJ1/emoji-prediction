@@ -91,7 +91,7 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     X_test = scaler.transform(X_test)
 
     # Train the model (in silent mode, verbose=0)
-    tqdm_callback = TqdmMetricsProgressBarCallback(num_epochs, validation_data=None,  #(X_test, y_test),
+    tqdm_callback = TqdmMetricsProgressBarCallback(num_epochs, validation_data=(X_test, y_test),
                                                    eval_interval=1)
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
