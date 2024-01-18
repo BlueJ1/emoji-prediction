@@ -1,3 +1,4 @@
+import keras.src.backend
 import numpy as np
 import pandas as pd
 from multiprocessing import Process, Manager
@@ -8,29 +9,6 @@ import tensorflow as tf
 import sys
 
 from balance_dataset import balance_multiclass_dataset
-
-# https://stackoverflow.com/questions/55479221/how-to-clearing-tensorflow-keras-gpu-memory
-from keras.backend.tensorflow_backend import set_session
-from keras.backend.tensorflow_backend import clear_session
-from keras.backend.tensorflow_backend import get_session
-import tensorflow
-import gc
-
-
-# Reset Keras Session
-def reset_keras():
-    sess = get_session()
-    clear_session()
-    sess.close()
-    sess = get_session()
-
-    print(gc.collect())  # if it does something you should see a number as output
-
-    # use the same config as you used to create the session
-    config = tensorflow.ConfigProto()
-    config.gpu_options.per_process_gpu_memory_fraction = 1
-    config.gpu_options.visible_device_list = "0"
-    set_session(tensorflow.Session(config=config))
 
 
 def main(run_id, parameters):
@@ -107,7 +85,7 @@ def main(run_id, parameters):
                                            parameter_dict['hyperparameters'])
                 # print("Evaluated model on data, fold", i)
 
-                reset_keras()
+                keras.backend.clear_session()
 
         for val in results_dict.values():
             results[parameter_dict['name']].append(val)
