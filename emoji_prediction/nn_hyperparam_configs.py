@@ -1,0 +1,40 @@
+from models.mlp_unified import mlp_data, train_fold
+
+parameters = [
+    dict(
+        name='mlp_concat',
+        data_preprocessing=mlp_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_fold,
+        hyperparameters=dict(input_dim=200,
+                             lr=1e-4,
+                             num_epochs=50,
+                             batch_size=1024),
+        balance_dataset=False,
+        parallel=False
+    ),
+    dict(
+        name='mlp_concatBalanced',
+        data_preprocessing=mlp_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_fold,
+        hyperparameters=dict(input_dim=200,
+                             lr=1e-4,
+                             num_epochs=50,
+                             batch_size=1024),
+        balance_dataset=True,
+        parallel=False
+    ),
+    dict(
+        name='mlp_sum',
+        data_preprocessing=mlp_data,
+        data_file='word_around_emoji_sum_of_embeddings.pkl',
+        evaluate=train_fold,
+        hyperparameters=dict(input_dim=50,
+                             lr=1e-5,
+                             num_epochs=100,
+                             batch_size=1024),
+        balance_dataset=True,
+        parallel=False
+    )
+]
