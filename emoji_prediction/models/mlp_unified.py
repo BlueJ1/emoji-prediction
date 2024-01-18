@@ -37,11 +37,8 @@ class TqdmMetricsProgressBarCallback(Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         loss = logs.get('loss')
-        print(type(loss))
         acc = logs.get('accuracy', 0) * 100  # Convert to percentage
-        print(type(acc))
         f1_score = logs.get('f1_score', 0)  # F1 score
-        print(type(f1_score))
 
         if self.validation_data and (epoch + 1) % self.eval_interval == 0:
             self.val_loss, self.val_acc, self.val_f1_score = (
@@ -61,7 +58,7 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
         setup_gpu(gpu_id)
 
     input_dim = hyperparameters['input_dim']
-    output_dim = hyperparameters['output_dim']
+    output_dim = 49
     learning_rate = hyperparameters['lr']
     num_epochs = hyperparameters['num_epochs']
     batch_size = hyperparameters['batch_size']
@@ -95,12 +92,17 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     # Train the model (in silent mode, verbose=0)
     tqdm_callback = TqdmMetricsProgressBarCallback(num_epochs, validation_data=None,  #(X_test, y_test),
                                                    eval_interval=1)
+    config = tf.compat.v1.ConfigProto()
+    config.gpu_options.allow_growth = True
+    session = tf.compat.v1.Session(config=config)
     history = model.fit(X_train, y_train,
                         epochs=num_epochs, batch_size=batch_size, verbose=0,
                         callbacks=[tqdm_callback])
     # Evaluate the model on the validation data
     evaluation = model.evaluate(
         X_test, y_test, verbose=1, batch_size=2 * batch_size)
+
+    session.close()
 
     results_dict[fold_number] = evaluation
 
