@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: API for Emoji Prediction
+  description: This is the API for the Emoji Prediction task
+  version: 0.0.1
+  contact:
+    name: Lennart August, Laura M Quirós, Wojtek
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+  
+components:
+    schemas:
+      Tweet:
+        type: object
+        properties:
+          text:
+            type: string
+            description: The text to be analyzed
+            example: "I love apples"
+        required:
+          - text
+        example:
+          text: "I love apples"
+      Emoji:
+        type: object
+        properties:
+          text:
+            type: string
+            description: The text to be analyzed
+            example: "I love apples"
+          emoji:
+            type: string
+            description: The predicted emoji
+            example: "😍"
+        required:
+          - text
+          - emoji
+        example:
+          text: "I love apples"
+          emoji: "😍"
+    responses:
+      NoResults:
+        description: List empty; no results
+        content:
+          application/json:
+            schema:
+              type : string
+            example: |-
+              204, "Resource requested was empty"
+      ServerError:
+        description: Server error; no results, try again later
+        content:
+          application/json:
+            schema:
+              type : string
+            example: |-
+              5XX, "There was a server error"
+      BadRequest:
+        description: The request was not well-formed, see error details
+        content:
+          application/json:
+            schema:
+              type: string
+            example: |-
+              402, "The request was flawed"
+      NotFound:
+        description: The specified resource was not found
+        content:
+          application/json:
+            schema:
+              type: string
+            example: |-
+              404, "Resource not found"
+      EmojiPredictionResponse:
+        description: Emoji prediction response
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Emoji"
+    parameters:
+      model:
+        name: model
+        in: query
+        description: The model to use for prediction
+        required: false
+        schema:
+          type: string
+          example: "logistic_regression"
+
+paths:
+    /predict/{model}}:
+      post:
+        summary: Predict emoji
+        description: Predict emoji for a given text
+        parameters:
+          - $ref: "#/components/parameters/model"
+        requestBody:
+            description: The text to be analyzed
+            required: true
+            content:
+                application/json:
+                    schema:
+                      $ref: "#/components/schemas/Tweet"
+        responses:
+            "200":
+                description: Emoji prediction response
+                content:
+                  application/json:
+                      schema:
+                        $ref: "#/components/responses/EmojiPredictionResponse"
+            "204":
+                $ref: "#/components/responses/NoResults"
+            "402":
+                $ref: "#/components/responses/BadRequest"
+            "404":
+                $ref: "#/components/responses/NotFound"
+            "5XX":
+                $ref: "#/components/responses/ServerError"
