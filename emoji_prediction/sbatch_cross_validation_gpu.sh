@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --time=10:00:00
+#SBATCH --job-name=nn_cross_validation
 #SBATCH --ntasks=1
 #SBATCH --gpus-per-node=v100:1
 #SBATCH --mem=124G
