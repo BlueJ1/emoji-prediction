@@ -7,4 +7,5 @@ demo-streamlit/.venv/
 env/*
 data/*
 emoji_prediction/data/*
+backend/env/*
 ```

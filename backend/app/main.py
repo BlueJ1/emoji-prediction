@@ -2,7 +2,7 @@ import pickle as pkl
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from starlette.responses import RedirectResponse
-from emoji_prediction.models.four_gram import four_gram_api_predict
+
 
 tags_metadata = [
     {
