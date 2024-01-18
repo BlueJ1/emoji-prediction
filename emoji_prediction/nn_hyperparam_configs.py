@@ -8,8 +8,8 @@ parameters = [
         evaluate=train_fold,
         hyperparameters=dict(input_dim=200,
                              lr=1e-4,
-                             num_epochs=50,
-                             batch_size=1024),
+                             num_epochs=100,
+                             batch_size=4096),
         balance_dataset=False,
         parallel=False
     ),
