@@ -37,8 +37,11 @@ class TqdmMetricsProgressBarCallback(Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         loss = logs.get('loss')
+        print(type(loss))
         acc = logs.get('accuracy', 0) * 100  # Convert to percentage
+        print(type(acc))
         f1_score = logs.get('f1_score', 0)  # F1 score
+        print(type(f1_score))
 
         if self.validation_data and (epoch + 1) % self.eval_interval == 0:
             self.val_loss, self.val_acc, self.val_f1_score = (
