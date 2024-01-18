@@ -1,3 +1,5 @@
+import pickle
+
 import numpy as np
 from pathlib import Path
 from tqdm import tqdm
@@ -40,3 +42,19 @@ def one_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
             predictions.append(np.argmax(one_gram_dict[word]))
 
     results_dict[i] = evaluate_predictions(predictions, y_test)
+
+    pickle.dump((one_gram_dict, most_common_emoji), open('one_gram.pkl', 'wb+'))
+
+
+def one_gram_process_api_data(sentence: str, index: int):
+    data_path = Path(__file__).parent.parent / 'data'
+    emoji_path = data_path / 'emojis.txt'
+    word_path = data_path / 'words.txt'
+
+    with(open(emoji_path, 'r', encoding='utf-8')) as f:
+        emoji_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
+
+    with(open(word_path, 'r', encoding='utf-8')) as f:
+        word_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
+
+

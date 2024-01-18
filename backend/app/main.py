@@ -1,8 +1,19 @@
 import pickle as pkl
+
+import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 from starlette.responses import RedirectResponse
-
+try:
+    from emoji_prediction.models import four_gram
+except ModuleNotFoundError:
+    import os
+    import sys
+    sys.path.append(os.path.join(
+        os.path.join(os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), '../..'), 'emoji_prediction'), 'models'))
+    import four_gram
 
 tags_metadata = [
     {
@@ -41,11 +52,20 @@ async def home():
     return RedirectResponse(url="/docs")
 
 
-@app.post("/predict-emoji", tags=["emoji prediction API"])
-async def predict_emoji(text: str, chosen_model: str, index: int):
+class ModelInput(BaseModel):
+    text: str
+    chosen_model: str
+    index: int
+
+@app.post("/predict", tags=["emoji prediction API"])
+async def predict_emoji(model : ModelInput):
     """
     Predicts emoji based on text
     """
+    text = model.text
+    chosen_model = model.chosen_model
+    index = model.index
+
     if text == "":
         raise HTTPException(status_code=400,
                             detail="Please enter a text to predict emoji")
@@ -62,8 +82,7 @@ async def predict_emoji(text: str, chosen_model: str, index: int):
     model = ""
     prediction = ""
     if chosen_model == "Four-gram":
-        model = pkl.load(open("emoji_prediction/models/four_gram.pkl", "rb"))
-        prediction = four_gram_api_predict(text, index)
+        prediction = four_gram.four_gram_api_predict(text, index)
     """
     elif chosen_model == "One-gram":
         model = pkl.load(open("emoji_prediction/models/one_gram.pkl", "rb"))

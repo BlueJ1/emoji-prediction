@@ -201,6 +201,8 @@ def mlp_concat_api_predict(sentence: str, index: int):
     model_path = Path(__file__).parent.parent / 'models'
     mlp_model_path = model_path / 'mlp_concat.keras'
 
+    print("We got to the mlp concat")
+
     with open(vocab_path, 'r', encoding='utf-8') as f:
         word_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 

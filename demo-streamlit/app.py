@@ -64,8 +64,8 @@ def main():
 
     with st.form(key="pydantic_form"):
         data = sp.pydantic_input(key="my_input_model", model=ModelInput)
-        chosen_model = st.selectbox("Choose a model", [model.value for model in Model])
-        data["chosen_model"] = chosen_model
+        # chosen_model = st.selectbox("Choose a model", [model.value for model in Model])
+        # data["chosen_model"] = chosen_model
         print(data)
         st.write(data)
         if valid_index(data["index"], data["text"]) is False:

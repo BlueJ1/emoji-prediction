@@ -5,9 +5,14 @@ import pickle
 import pandas as pd
 
 try:
-    from models.four_gram_class import FourGram
-    from models.evaluate_predictions import evaluate_predictions
+    from emoji_prediction.models.four_gram_class import FourGram
+    from emoji_prediction.models import four_gram_class
+    from emoji_prediction.models.evaluate_predictions import evaluate_predictions
 except ModuleNotFoundError:
+    import sys
+    import four_gram_class
+    # print(sys.path)
+    print("oopsie")
     from four_gram_class import FourGram
     from evaluate_predictions import evaluate_predictions
 
@@ -111,6 +116,8 @@ def four_gram_api_predict(sentence: str, index: int):
     model_path = Path(__file__).parent.parent / 'models'
     four_gram_model_path = Path(__file__).parent / 'four_gram.pkl'
 
+    print("We got to the four_gram_api_predict function")
+
     with open(vocab_path, 'r', encoding='utf-8') as f:
         word_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 
@@ -119,17 +126,15 @@ def four_gram_api_predict(sentence: str, index: int):
             f.readlines())}
 
     with open(emoji_to_unicode_path, 'r', encoding='utf-8') as f:
-        emoji_to_unicode = {emoji: unicode for emoji, unicode in [
-            line.split() for line in f.readlines()]}
+        emoji_to_unicode = {emoji: unicode for emoji, unicode in [line.split() for line in f.readlines()]}
 
-    four_gram_dict, most_common_emoji = pickle.load(
-        open(four_gram_model_path, 'rb'))
+    four_gram_dict, most_common_emoji = pickle.load(open(four_gram_model_path, 'rb'))
 
-    four_gram: FourGram = four_gram_process_api_data(
+    four_gram_instance: FourGram = four_gram_process_api_data(
         sentence, index, word_vocab)
 
-    if four_gram in four_gram_dict:
-        predicted_idx = four_gram_dict[four_gram]
+    if four_gram_instance in four_gram_dict:
+        predicted_idx = four_gram_dict[four_gram_instance]
     else:
         predicted_idx = most_common_emoji
 
