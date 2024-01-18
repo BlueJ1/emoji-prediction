@@ -42,7 +42,7 @@ def add_prediction(prediction: str, text: str, index: int) -> str:
 
 
 def predict(text: str, chosen_model: str, index: int) -> str:
-    print(chosen_model == Model.FOURGRAM)
+
     prediction = ""
     if chosen_model == Model.FOURGRAM.value:
         prediction = four_gram.four_gram_api_predict(text, index)

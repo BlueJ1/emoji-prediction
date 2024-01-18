@@ -4,8 +4,15 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 
-from models.evaluate_predictions import evaluate_predictions
-
+try:
+    from models.evaluate_predictions import evaluate_predictions
+except ModuleNotFoundError:
+    import sys
+    import os
+    sys.path.append(os.path.join(
+        os.path.join(os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
+    import evaluate_predictions
 
 def one_gram_data(df):
     X = df['word'].values
@@ -32,7 +39,7 @@ def one_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
         else:
             one_gram_dict[word] = np.zeros(len(emoji_vocab))
             one_gram_dict[word][emoji] += 1
-
+    pickle.dump((one_gram_dict, most_common_emoji), open('one_gram.pkl', 'wb+'))
     # make predictions
     predictions = []
     for word in X_test:
@@ -43,7 +50,7 @@ def one_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
 
     results_dict[i] = evaluate_predictions(predictions, y_test)
 
-    pickle.dump((one_gram_dict, most_common_emoji), open('one_gram.pkl', 'wb+'))
+
 
 
 def one_gram_process_api_data(sentence: str, index: int):

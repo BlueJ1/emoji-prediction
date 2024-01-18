@@ -6,6 +6,8 @@ from pickle import dump
 from pathlib import Path
 import tensorflow as tf
 
+from emoji_prediction.models import one_gram
+from emoji_prediction.models.one_gram import one_gram_data
 from models.mlp_unified import mlp_data, train_fold
 from balance_dataset import balance_multiclass_dataset
 
@@ -19,15 +21,15 @@ parameters = [
     #     mlp=False,
     #     parallel=True
     # ),
-    # dict(
-    #     name='one_gram',
-    #     data_preprocessing=one_gram_data,
-    #     data_file='word_before_emoji_index.pkl',
-    #     evaluate=one_gram,
-    #     hyperparameters=dict(),
-    #     mlp=False,
-    #     parallel=True
-    # ),
+     dict(
+         name='one_gram',
+         data_preprocessing=one_gram_data,
+         data_file='word_before_emoji_index.pkl',
+         evaluate=one_gram,
+         hyperparameters=dict(),
+         mlp=False,
+         parallel=True
+     ),
     # dict(
     #     name='four_gram',
     #     data_preprocessing=four_gram_data,
