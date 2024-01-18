@@ -33,20 +33,20 @@ parameters = [
         parallel=True
     ),
     dict(
-        name='random_forest500GiniLog2',
+        name='random_forest300GiniLog2',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_rf,
-        hyperparameters=dict(n_estimators=500, criterion='gini', max_features='log2'),
+        hyperparameters=dict(n_estimators=300, criterion='gini', max_features='log2'),
         balance_dataset=False,
         parallel=False
     ),
     dict(
-        name='random_forest500EntropySqrt',
+        name='random_forest300EntropySqrt',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_rf,
-        hyperparameters=dict(n_estimators=500, criterion='entropy', max_features='sqrt'),
+        hyperparameters=dict(n_estimators=300, criterion='entropy', max_features='sqrt'),
         balance_dataset=False,
         parallel=False
     ),
