@@ -27,7 +27,6 @@ def parse_to_df(data_path: Path = None, file_path: Path = None,
             lines = f.readlines(size_to_read)
         else:
             lines = f.readlines()
-        sequence_i = 0
         sequence_words = []
         sequence_emojis = []
         for line in lines:
@@ -35,7 +34,6 @@ def parse_to_df(data_path: Path = None, file_path: Path = None,
             if not line:
                 sequences.append([np.asarray(sequence_words, dtype=np.int32),
                                   np.asarray(sequence_emojis, dtype=np.int32)])
-                sequence_i += 1
                 sequence_words = []
                 sequence_emojis = []
             elif len(line.split()) == 2:

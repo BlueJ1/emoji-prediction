@@ -15,7 +15,7 @@ which python
 python -V
 
 start=$(date +%s)
-cp -r /scratch/$USER/emoji-prediction/emoji-prediction/ $TMPDIR/ep/
+cp -r /scratch/$USER/emoji-prediction/emoji_prediction/ $TMPDIR/ep/
 end=$(date +%s)
 duration=$((end - start))
 echo "Copying took $duration seconds."
