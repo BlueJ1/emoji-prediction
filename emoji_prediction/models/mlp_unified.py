@@ -101,7 +101,7 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
                         callbacks=[tqdm_callback])
     # Evaluate the model on the validation data
     evaluation = model.evaluate(
-        X_test, y_test, verbose=1, batch_size=2 * batch_size)
+        X_test, y_test, verbose=1, batch_size=batch_size)
 
     session.close()
 
