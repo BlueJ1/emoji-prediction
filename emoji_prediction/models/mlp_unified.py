@@ -82,7 +82,6 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     model.compile(
         optimizer=SGD(learning_rate=learning_rate),  # Adam(learning_rate=learning_rate),
         loss='CategoricalCrossentropy',
-        run_eagerly=True,
         metrics=[F1Score(average="weighted", dtype=tf.float32), "accuracy"])
 
     # Standardize the features
