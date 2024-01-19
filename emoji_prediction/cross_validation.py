@@ -92,9 +92,9 @@ def main(run_id, parameters):
         print(f"Weighted F1 score of {parameter_dict['name']}: "
               f"{np.average([results_dict[i]['weighted_f1_score'] for i in range(k)])}")
 
-    # save results
-    with open(f'results_{run_id}.pkl', 'wb') as f:
-        dump(results, f)
+        # save results
+        with open(f'results_{run_id}.pkl', 'wb') as f:
+            dump(results, f)
 
 
 if __name__ == '__main__':

@@ -60,6 +60,24 @@ parameters = [
         parallel=False
     ),
     dict(
+        name='random_forest100GiniLog2',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_rf,
+        hyperparameters=dict(n_estimators=100, criterion='gini', max_features='log2'),
+        balance_dataset=False,
+        parallel=False
+    ),
+    dict(
+        name='random_forest100GiniLog2Balanced',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_rf,
+        hyperparameters=dict(n_estimators=100, criterion='gini', max_features='log2'),
+        balance_dataset=True,
+        parallel=False
+    ),
+    dict(
         name='random_forest100EntropyLog2',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
@@ -87,12 +105,39 @@ parameters = [
         parallel=True
     ),
     dict(
+        name='Quadrant Discriminant Analysis Balanced',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_qda,
+        hyperparameters=dict(),
+        balance_dataset=True,
+        parallel=True
+    ),
+    dict(
         name='k_neighbors3',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_k_nbh,
         hyperparameters=dict(num_neighbors=3),
         balance_dataset=False,
+        parallel=False
+    ),
+    dict(
+        name='k_neighbors5',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_k_nbh,
+        hyperparameters=dict(num_neighbors=5),
+        balance_dataset=False,
+        parallel=False
+    ),
+    dict(
+        name='k_neighbors5Balanced',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_k_nbh,
+        hyperparameters=dict(num_neighbors=5),
+        balance_dataset=True,
         parallel=False
     ),
     dict(
@@ -123,12 +168,39 @@ parameters = [
         parallel=True
     ),
     dict(
+        name='naive_bayesBalanced',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_naive_bayes,
+        hyperparameters=dict(),
+        balance_dataset=True,
+        parallel=True
+    ),
+    dict(
         name='logistic_regressionC1.0ElasticNet0.5',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
         hyperparameters=dict(C=1.0, penalty='elasticnet', l1_ratio=0.5),
         balance_dataset=False,
+        parallel=False
+    ),
+    dict(
+        name='logistic_regressionC0.5ElasticNet0.3',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_log_reg,
+        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3),
+        balance_dataset=False,
+        parallel=False
+    ),
+    dict(
+        name='logistic_regressionC0.5ElasticNet0.3Balanced',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_log_reg,
+        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3),
+        balance_dataset=True,
         parallel=False
     ),
     dict(
@@ -159,6 +231,15 @@ parameters = [
         parallel=True
     ),
     dict(
+        name='svmRBFC1.0tol1e-3Balanced',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_svm,
+        hyperparameters=dict(kernel="rbf", C=1.0, tol=1e-3),
+        balance_dataset=True,
+        parallel=True
+    ),
+    dict(
         name='svmPolyC0.5tol1e-3',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
@@ -174,6 +255,15 @@ parameters = [
         evaluate=train_svm,
         hyperparameters=dict(kernel="poly", C=0.1, tol=2e-4),
         balance_dataset=False,
+        parallel=True
+    ),
+    dict(
+        name='svmPolyC0.1tol2e-4Balanced',
+        data_preprocessing=basic_ml_data,
+        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        evaluate=train_svm,
+        hyperparameters=dict(kernel="poly", C=0.1, tol=2e-4),
+        balance_dataset=True,
         parallel=True
     ),
     dict(
