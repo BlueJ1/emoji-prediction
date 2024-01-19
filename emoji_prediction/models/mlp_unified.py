@@ -90,6 +90,11 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
+    X_train = tf.cast(X_train, tf.float32)
+    y_train = tf.cast(y_train, tf.float32)
+    X_test = tf.cast(X_test, tf.float32)
+    y_test = tf.cast(y_test, tf.float32)
+
     # Train the model (in silent mode, verbose=0)
     tqdm_callback = TqdmMetricsProgressBarCallback(num_epochs, validation_data=(X_test, y_test),
                                                    eval_interval=1)
@@ -123,8 +128,6 @@ def mlp_data(df):
     X = result_df.iloc[:, 49:].values
     y = result_df.iloc[:, :49].values
 
-    X = tf.cast(X, tf.float32)
-    y = tf.cast(y, tf.float32)
     print(X.shape, y.shape)
     # print(X)
     # print(y)
