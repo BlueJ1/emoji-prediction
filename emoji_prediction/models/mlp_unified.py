@@ -96,6 +96,9 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
     session = tf.compat.v1.Session(config=config)
+
+    print(X_train.dtype)
+    print(y_train.dtype)
     history = model.fit(X_train, y_train,
                         epochs=num_epochs, batch_size=batch_size, verbose=0,
                         callbacks=[tqdm_callback])
