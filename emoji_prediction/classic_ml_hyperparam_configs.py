@@ -5,183 +5,183 @@ from models.classic_ml_models import (basic_ml_data, train_rf, train_svm, train_
                                       train_log_reg, train_qda)
 
 parameters = [
-    dict(
-        name='baseline',
-        data_preprocessing=baseline_data,
-        data_file='word_before_emoji_index.pkl',
-        evaluate=baseline,
-        hyperparameters=dict(),
-        balance_dataset=False,
-        parallel=True
-    ),
-    dict(
-        name='one_gram',
-        data_preprocessing=one_gram_data,
-        data_file='word_before_emoji_index.pkl',
-        evaluate=one_gram,
-        hyperparameters=dict(),
-        balance_dataset=False,
-        parallel=True
-    ),
-    dict(
-        name='four_gram',
-        data_preprocessing=four_gram_data,
-        data_file='words_around_emoji_index.pkl',
-        evaluate=four_gram,
-        hyperparameters=dict(),
-        balance_dataset=False,
-        parallel=True
-    ),
-    dict(
-        name='random_forest300GiniLog2',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=300, criterion='gini', max_features='log2'),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='random_forest300EntropySqrt',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=300, criterion='entropy', max_features='sqrt'),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='random_forest100GiniSqrt',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=100, criterion='gini', max_features='sqrt'),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='random_forest100GiniLog2',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=100, criterion='gini', max_features='log2'),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='random_forest100GiniLog2Balanced',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=100, criterion='gini', max_features='log2'),
-        balance_dataset=True,
-        parallel=False
-    ),
-    dict(
-        name='random_forest100EntropyLog2',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=100, criterion='entropy', max_features='log2'),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='random_forest30EntropySqrt',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_rf,
-        hyperparameters=dict(n_estimators=30, criterion='entropy', max_features='sqrt'),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='Quadrant Discriminant Analysis',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_qda,
-        hyperparameters=dict(),
-        balance_dataset=False,
-        parallel=True
-    ),
-    dict(
-        name='Quadrant Discriminant Analysis Balanced',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_qda,
-        hyperparameters=dict(),
-        balance_dataset=True,
-        parallel=True
-    ),
-    dict(
-        name='k_neighbors3',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_k_nbh,
-        hyperparameters=dict(num_neighbors=3),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='k_neighbors5',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_k_nbh,
-        hyperparameters=dict(num_neighbors=5),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='k_neighbors5Balanced',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_k_nbh,
-        hyperparameters=dict(num_neighbors=5),
-        balance_dataset=True,
-        parallel=False
-    ),
-    dict(
-        name='k_neighbors10',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_k_nbh,
-        hyperparameters=dict(num_neighbors=10),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='k_neighbors30',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_k_nbh,
-        hyperparameters=dict(num_neighbors=30),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='naive_bayes',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_naive_bayes,
-        hyperparameters=dict(),
-        balance_dataset=False,
-        parallel=True
-    ),
-    dict(
-        name='naive_bayesBalanced',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_naive_bayes,
-        hyperparameters=dict(),
-        balance_dataset=True,
-        parallel=True
-    ),
+    # dict(
+    #     name='baseline',
+    #     data_preprocessing=baseline_data,
+    #     data_file='word_before_emoji_index.pkl',
+    #     evaluate=baseline,
+    #     hyperparameters=dict(),
+    #     balance_dataset=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='one_gram',
+    #     data_preprocessing=one_gram_data,
+    #     data_file='word_before_emoji_index.pkl',
+    #     evaluate=one_gram,
+    #     hyperparameters=dict(),
+    #     balance_dataset=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='four_gram',
+    #     data_preprocessing=four_gram_data,
+    #     data_file='words_around_emoji_index.pkl',
+    #     evaluate=four_gram,
+    #     hyperparameters=dict(),
+    #     balance_dataset=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='random_forest300GiniLog2',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_rf,
+    #     hyperparameters=dict(n_estimators=300, criterion='gini', max_features='log2'),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='random_forest300EntropySqrt',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_rf,
+    #     hyperparameters=dict(n_estimators=300, criterion='entropy', max_features='sqrt'),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='random_forest100GiniSqrt',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_rf,
+    #     hyperparameters=dict(n_estimators=100, criterion='gini', max_features='sqrt'),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='random_forest100GiniLog2',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_rf,
+    #     hyperparameters=dict(n_estimators=100, criterion='gini', max_features='log2'),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='random_forest100GiniLog2Balanced',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_rf,
+    #     hyperparameters=dict(n_estimators=100, criterion='gini', max_features='log2'),
+    #     balance_dataset=True,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='random_forest100EntropyLog2',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_rf,
+    #     hyperparameters=dict(n_estimators=100, criterion='entropy', max_features='log2'),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='random_forest30EntropySqrt',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_rf,
+    #     hyperparameters=dict(n_estimators=30, criterion='entropy', max_features='sqrt'),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='Quadrant Discriminant Analysis',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_qda,
+    #     hyperparameters=dict(),
+    #     balance_dataset=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='Quadrant Discriminant Analysis Balanced',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_qda,
+    #     hyperparameters=dict(),
+    #     balance_dataset=True,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='k_neighbors3',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_k_nbh,
+    #     hyperparameters=dict(num_neighbors=3),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='k_neighbors5',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_k_nbh,
+    #     hyperparameters=dict(num_neighbors=5),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='k_neighbors5Balanced',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_k_nbh,
+    #     hyperparameters=dict(num_neighbors=5),
+    #     balance_dataset=True,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='k_neighbors10',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_k_nbh,
+    #     hyperparameters=dict(num_neighbors=10),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='k_neighbors30',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_k_nbh,
+    #     hyperparameters=dict(num_neighbors=30),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='naive_bayes',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_naive_bayes,
+    #     hyperparameters=dict(),
+    #     balance_dataset=False,
+    #     parallel=True
+    # ),
+    # dict(
+    #     name='naive_bayesBalanced',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_naive_bayes,
+    #     hyperparameters=dict(),
+    #     balance_dataset=True,
+    #     parallel=True
+    # ),
     dict(
         name='logistic_regressionC1.0ElasticNet0.5',
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=1.0, penalty='elasticnet', l1_ratio=0.5),
+        hyperparameters=dict(C=1.0, penalty='elasticnet', l1_ratio=0.5, solver='saga'),
         balance_dataset=False,
         parallel=False
     ),
@@ -190,7 +190,7 @@ parameters = [
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3),
+        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3, solver='saga'),
         balance_dataset=False,
         parallel=False
     ),
@@ -199,7 +199,7 @@ parameters = [
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3),
+        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3, solver='saga'),
         balance_dataset=True,
         parallel=False
     ),
@@ -208,7 +208,7 @@ parameters = [
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=0.1, penalty='elasticnet', l1_ratio=0.5),
+        hyperparameters=dict(C=0.1, penalty='elasticnet', l1_ratio=0.5, solver='saga'),
         balance_dataset=False,
         parallel=False
     ),
@@ -217,7 +217,7 @@ parameters = [
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=0.01, penalty='elasticnet', l1_ratio=0.5),
+        hyperparameters=dict(C=0.01, penalty='elasticnet', l1_ratio=0.5, solver='saga'),
         balance_dataset=False,
         parallel=False
     ),
