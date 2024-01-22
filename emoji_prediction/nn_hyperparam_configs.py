@@ -1,4 +1,4 @@
-from models.mlp_unified import mlp_data, train_fold
+from models.mlp_torch import mlp_data, train_fold
 
 parameters = [
     dict(

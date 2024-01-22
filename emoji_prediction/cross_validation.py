@@ -1,11 +1,11 @@
-import keras.src.backend
+# import keras.src.backend
 import numpy as np
 import pandas as pd
 from multiprocessing import Process, Manager
 from sklearn.model_selection import StratifiedKFold
 from pickle import dump
 from pathlib import Path
-import tensorflow as tf
+# import tensorflow as tf
 import sys
 
 from balance_dataset import balance_multiclass_dataset
@@ -15,15 +15,15 @@ def main(run_id, parameters):
     # k-fold cross validation
     k = 5
     results = {}
-    num_gpus = len(tf.config.experimental.list_physical_devices('GPU'))
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    if gpus:
-        try:
-            for gpu in gpus:
-                tf.config.experimental.set_memory_growth(gpu, True)
-
-        except RuntimeError as e:
-            print(e)
+    # num_gpus = len(tf.config.experimental.list_physical_devices('GPU'))
+    # gpus = tf.config.experimental.list_physical_devices('GPU')
+    # if gpus:
+    #     try:
+    #         for gpu in gpus:
+    #             tf.config.experimental.set_memory_growth(gpu, True)
+    #
+    #     except RuntimeError as e:
+    #         print(e)
 
     for parameter_dict in parameters:
         print(f'Running {parameter_dict["name"]} model')
@@ -41,19 +41,18 @@ def main(run_id, parameters):
                 results_dict = manager.dict()
                 processes = []
                 for i, (train_index, test_index) in enumerate(cv.split(np.zeros(X.shape[0]), np.zeros(y.shape[0]))):
-                    if isinstance(X, np.ndarray):
-                        X_train, X_test = X[train_index], X[test_index]
-                        y_train, y_test = y[train_index], y[test_index]
-                    else:
-                        X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
-                        y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
+                    X_train, X_test = X[train_index], X[test_index]
+                    y_train, y_test = y[train_index], y[test_index]
+                    # else:
+                    #     X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
+                    #     y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
 
                     # print("Loaded data, fold", i)
 
                     if parameter_dict['balance_dataset']:
                         X_train, y_train = balance_multiclass_dataset(X_train, y_train)
                         # print("Balanced data, fold", i)
-                    parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
+                    # parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
 
                     p = Process(target=parameter_dict["evaluate"], args=(
                         i, X_train, y_train, X_test, y_test, results_dict, parameter_dict['hyperparameters']))
@@ -67,12 +66,12 @@ def main(run_id, parameters):
         else:
             results_dict = {}
             for i, (train_index, test_index) in enumerate(cv.split(np.zeros(X.shape[0]), np.zeros(y.shape[0]))):
-                if isinstance(X, np.ndarray):
-                    X_train, X_test = X[train_index], X[test_index]
-                    y_train, y_test = y[train_index], y[test_index]
-                else:
-                    X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
-                    y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
+                # if isinstance(X, np.ndarray):
+                X_train, X_test = X[train_index], X[test_index]
+                y_train, y_test = y[train_index], y[test_index]
+                # else:
+                #     X_train, X_test = tf.gather(X, indices=train_index), tf.gather(X, indices=test_index)
+                #     y_train, y_test = tf.gather(y, indices=train_index), tf.gather(y, indices=test_index)
 
                 # print("Loaded data, fold", i)
 
@@ -80,12 +79,12 @@ def main(run_id, parameters):
                     X_train, y_train = balance_multiclass_dataset(X_train, y_train)
                     # print("Balanced data, fold", i)
 
-                parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
+                # parameter_dict['hyperparameters']['gpu_id'] = i % num_gpus if num_gpus > 0 else -1
                 parameter_dict['evaluate'](i, X_train, y_train, X_test, y_test, results_dict,
                                            parameter_dict['hyperparameters'])
                 # print("Evaluated model on data, fold", i)
 
-                keras.backend.clear_session()
+                # keras.backend.clear_session()
 
         for val in results_dict.values():
             results[parameter_dict['name']].append(val)
