@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from evaluate_predictions import evaluate_predictions
+from models.evaluate_predictions import evaluate_predictions
 
 
 class EmojiDataset(Dataset):
@@ -82,7 +82,6 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     X_train = torch.from_numpy(X_train).float()
     y_train = torch.from_numpy(y_train).long()
     X_test = torch.from_numpy(X_test).float()
-    y_test = torch.from_numpy(y_test).long()
 
     train_dataset = EmojiDataset(X_train, y_train)
     test_dataset = EmojiDataset(X_test, y_test)
@@ -92,26 +91,28 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
 
     optimizer = SGD(model.parameters(), lr=learning_rate, momentum=0.9)
 
-    for epoch in range(num_epochs):
+    for epoch in tqdm(range(num_epochs)):
         model.train()
-        with tqdm(total=len(train_dataloader), desc=f"Epoch {epoch + 1}/{num_epochs}", unit="batch") as progress_bar:
-            for i, (X_batch, y_batch) in enumerate(train_dataloader):
-                X_batch = X_batch.to(device)
-                y_batch = y_batch.to(device)
+        # with tqdm(total=len(train_dataloader), desc=f"Epoch {epoch + 1}/{num_epochs}", unit="batch") as progress_bar:
+        for i, (X_batch, y_batch) in enumerate(train_dataloader):
+            X_batch = X_batch.to(device)
+            y_batch = y_batch.to(device)
 
-                y_pred = model(X_batch)
-                loss, f1_score = model.loss(y_pred, y_batch)
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
+            y_pred = model(X_batch)
+            loss, f1_score = model.loss(y_pred, y_batch)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-                progress_bar.set_postfix_str(f"Loss: {loss:.2f}, F1 Score: {f1_score * 100:.2f}%")
-                progress_bar.update(1)
+            # progress_bar.set_postfix_str(f"Loss: {loss:.2f}, F1 Score: {f1_score * 100:.2f}%")
+            # progress_bar.update(1)
 
     model.eval()
     y_pred = np.stack([np.argmax(model(x.to(device)).detach().cpu().numpy(), axis=1) for x, _ in test_dataloader])
 
-    results_dict[fold_number] = evaluate_predictions(y_pred, y_test)
+    evaluation = evaluate_predictions(y_pred, y_test)
+    print(evaluation["weighted_f1_score"])
+    results_dict[fold_number] = evaluation
 
 
 def mlp_data(df):
@@ -124,7 +125,7 @@ def mlp_data(df):
     result_df = result_df.drop('words', axis=1)
 
     X = result_df.iloc[:, 49:].values
-    y = result_df.iloc[:, :49].values
+    y = np.argmax(result_df.iloc[:, :49].values, axis=1)
 
     print(X.shape, y.shape)
     # print(X)
