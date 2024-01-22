@@ -5,7 +5,7 @@ from collections import OrderedDict
 import numpy as np
 import pandas as pd
 import torch
-from keras.metrics import F1Score
+from sklearn.metrics import f1_score
 from sklearn.preprocessing import StandardScaler
 from torch import nn
 from torch.optim import SGD
@@ -53,9 +53,9 @@ class MLP(torch.nn.Module):
 
     def loss(self, y_pred, y_true):
         loss = self.loss_fn(y_pred, y_true)
-        f1_score = F1Score(average="weighted")(y_true.detach().cpu().numpy(),
-                                               np.argmax(y_pred.detach().cpu().numpy(), axis=1))
-        return loss, f1_score
+        f1 = f1_score(y_true.detach().cpu().numpy(),
+                      np.argmax(y_pred.detach().cpu().numpy(), axis=1), average="weighted")
+        return loss, f1
 
 
 def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hyperparameters):
