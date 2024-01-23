@@ -48,21 +48,45 @@ def add_emoji(prediction, index, text):
     # get emoji from emoji dict
     data_path = Path(__file__).parent.parent / 'data'
     file_name = 'emojis.txt'
-    with open(data_path / file_name, 'r') as f:
-        emoji_dict = eval(f.read())
+    with open(data_path / file_name, 'r', encoding='utf-8') as f:
+        emoji_dict = {idx: emoji[:-1] for idx, emoji in enumerate(f.readlines())}
 
-    print(f"The prediction number is {prediction}, and the emoji is {emoji_dict[prediction]}")
-    prediction = emoji_dict[prediction]
+    print(f"The prediction number is {prediction},")
+    # print(f"and the emoji is {emoji_dict[prediction]}")
+    # prediction = emoji_dict[prediction]
     # add prediction to text in the index position
     return text[:index] + prediction + text[index:]
 
 
-def logreq_api(text: str, index: int) -> str:
+def embed_text(text):
+    data_path = Path(__file__).parent.parent / 'data'
+    file_name = 'glove.6B.50d.txt'
+    with open(data_path / file_name, 'r', encoding='utf-8') as f:
+        glove = {}
+        for line in f.readlines():
+            values = line.split()
+            word = values[0]
+            embedding = np.array(values[1:], dtype=float)
+            glove[word] = embedding
+
+    # get the embeddings of the words in the text
+    text = text.split()
+    text = [glove[word] for word in text]
+    text = np.sum(text, axis=0)
+    print(f"Text embedded: {text}")
+    return text
+
+
+def logreq_api(text: str, index: int, X_train, y_train, X_test) -> str:
     model = train("log_reg", X_train, y_train, X_test)
     if model == "":
         print("You need to train the model first")
         return
-    prediction = model.predict(text)
+    text = embed_text(text)
+    # make a 2d array
+    text = np.array([text])
+    print(f"Text shape: {text.shape}")
+    prediction = np.argmax(model.predict(text))
     response = add_emoji(prediction, index, text)
     print(response)
     pass
@@ -72,11 +96,13 @@ def train(model_name: str, X_train, y_train, X_test):
     model = ""
     if model_name == "log_reg":
         print("Chose Logistic Regression")
-        model = LogisticRegression(C=1, penalty="elasticnet", l1_ratio=0.5, solver="saga", max_iter=20000, n_jobs=-1)
+        model = LogisticRegression(C=1, penalty="elasticnet", l1_ratio=0.5, solver="saga",
+                                   max_iter=1, n_jobs=-1, verbose=1)
     else:
         print("You need to choose a model")
         return
-
+    # print first row of X_train
+    print(f"This is an example of input {X_train[0]}, shape: {X_train[0].shape}")
     print("Training the model")
     model.fit(X_train, y_train)
     print(f"Accuracy: {model.score(X_test, y_test)}")
@@ -84,7 +110,7 @@ def train(model_name: str, X_train, y_train, X_test):
     print("Saving the model")
     os.makedirs("models", exist_ok=True)
 
-    with open(f"classic_models/{model_name}.pkl", "wb") as f:
+    with open(f"{model_name}.pkl", "wb") as f:
         pickle.dump(model, f)
 
     return model
@@ -92,5 +118,5 @@ def train(model_name: str, X_train, y_train, X_test):
 
 if __name__ == "__main__":
     X_train, X_test, y_train, y_test = getdata()
-    # log_reg_api = logreq_api("i love you", 2)
-    train("log_reg", X_train, y_train, X_test)
+    log_reg_api = logreq_api("i love you", 2, X_train, y_train, X_test)
+    #train("log_reg", X_train, y_train, X_test)
