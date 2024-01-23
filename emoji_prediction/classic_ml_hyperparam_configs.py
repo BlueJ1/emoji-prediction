@@ -181,7 +181,7 @@ parameters = [
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=1.0, penalty='elasticnet', l1_ratio=0.5),
+        hyperparameters=dict(C=1.0, penalty='elasticnet', l1_ratio=0.5, solver='saga'),
         balance_dataset=False,
         parallel=False
     ),
@@ -190,7 +190,7 @@ parameters = [
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3),
+        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3, solver='saga'),
         balance_dataset=False,
         parallel=False
     ),
@@ -199,7 +199,7 @@ parameters = [
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3),
+        hyperparameters=dict(C=0.5, penalty='elasticnet', l1_ratio=0.3, solver='saga'),
         balance_dataset=True,
         parallel=False
     ),
@@ -208,7 +208,7 @@ parameters = [
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=0.1, penalty='elasticnet', l1_ratio=0.5),
+        hyperparameters=dict(C=0.1, penalty='elasticnet', l1_ratio=0.5, solver='saga'),
         balance_dataset=False,
         parallel=False
     ),
@@ -217,7 +217,7 @@ parameters = [
         data_preprocessing=basic_ml_data,
         data_file='word_around_emoji_concatenation_of_embeddings.pkl',
         evaluate=train_log_reg,
-        hyperparameters=dict(C=0.01, penalty='elasticnet', l1_ratio=0.5),
+        hyperparameters=dict(C=0.01, penalty='elasticnet', l1_ratio=0.5, solver='saga'),
         balance_dataset=False,
         parallel=False
     ),

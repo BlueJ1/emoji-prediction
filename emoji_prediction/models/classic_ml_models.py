@@ -114,13 +114,14 @@ def train_log_reg(fold_number, X_train, y_train, X_test, y_test, results_dict, h
     C = hyperparameters['C']
     penalty = hyperparameters['penalty']
     l1_ratio = hyperparameters['l1_ratio']
+    solver = hyperparameters['solver']
 
     # Standardize the features
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    model = LogisticRegression(C=C, penalty=penalty, l1_ratio=l1_ratio, max_iter=20000, n_jobs=-1)
+    model = LogisticRegression(C=C, penalty=penalty, l1_ratio=l1_ratio, solver=solver, max_iter=20000, n_jobs=-1)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
