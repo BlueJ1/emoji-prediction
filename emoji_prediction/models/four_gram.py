@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from pathlib import Path
 from tqdm import tqdm
 import pickle
@@ -327,12 +328,12 @@ def four_gram_api_predict(sentence: str, index: int):
 
 
 if __name__ == '__main__':
-    # data_path = Path(__file__).parent.parent / 'data'
-    # data_file = 'words_around_emoji_index.pkl'
-    # df = pd.read_pickle(data_path / data_file)
-    #
-    # X, y = four_gram_data(df)
-    #
-    # generate_four_gram(X, y, None)
+    data_path = Path(__file__).parent.parent / 'data'
+    data_file = 'words_around_emoji_index.pkl'
+    df = pd.read_pickle(data_path / data_file)
 
-    print(four_gram_api_predict('love you', 2))
+    X, y = four_gram_data(df)
+
+    generate_four_gram(X, y, None)
+
+    print(four_gram_api_predict('much love to you', 2))

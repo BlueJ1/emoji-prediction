@@ -121,47 +121,47 @@ parameters = [
     #     hyperparameters=dict(num_neighbors=3),
     #     balance_dataset=False,
     #     parallel=False
+    # # ),
+    # dict(
+    #     name='k_neighbors5',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings_without_stopwords.pkl',
+    #     evaluate=train_k_nbh,
+    #     hyperparameters=dict(num_neighbors=5),
+    #     balance_dataset=False,
+    #     parallel=False
     # ),
-    dict(
-        name='k_neighbors5',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings_without_stopwords.pkl',
-        evaluate=train_k_nbh,
-        hyperparameters=dict(num_neighbors=5),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='k_neighbors5Balanced',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_k_nbh,
-        hyperparameters=dict(num_neighbors=5),
-        balance_dataset=True,
-        parallel=False
-    ),
-    dict(
-        name='k_neighbors10',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_k_nbh,
-        hyperparameters=dict(num_neighbors=10),
-        balance_dataset=False,
-        parallel=False
-    ),
-    dict(
-        name='k_neighbors30',
-        data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
-        evaluate=train_k_nbh,
-        hyperparameters=dict(num_neighbors=30),
-        balance_dataset=False,
-        parallel=False
-    ),
+    # dict(
+    #     name='k_neighbors5Balanced',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_k_nbh,
+    #     hyperparameters=dict(num_neighbors=5),
+    #     balance_dataset=True,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='k_neighbors10',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_k_nbh,
+    #     hyperparameters=dict(num_neighbors=10),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
+    # dict(
+    #     name='k_neighbors30',
+    #     data_preprocessing=basic_ml_data,
+    #     data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+    #     evaluate=train_k_nbh,
+    #     hyperparameters=dict(num_neighbors=30),
+    #     balance_dataset=False,
+    #     parallel=False
+    # ),
     dict(
         name='naive_bayes',
         data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        data_file='word_around_emoji_sum_of_embeddings.pkl',
         evaluate=train_naive_bayes,
         hyperparameters=dict(),
         balance_dataset=False,
