@@ -72,7 +72,7 @@ def embed_text(text):
 
     # get the embeddings of the words in the text
     text = text.split()
-    text = [glove[word] for word in text]
+    text = [glove[word] for word in text if word in glove]
     text = np.sum(text, axis=0)
     print(f"Text embedded: {text}")
     return text
@@ -142,6 +142,7 @@ def predict(model_name: str, text: str):
     with open(data_path / 'emojis.txt', 'r', encoding='utf-8') as f:
         emoji_dict = {idx: emoji[:-1] for idx, emoji in enumerate(f.readlines())}
 
+    text = text.lower()
     # add the emoji to the text
     text = embed_text(text)
     # make a 2d array
@@ -158,5 +159,5 @@ def predict(model_name: str, text: str):
 
 if __name__ == "__main__":
     X_train, X_test, y_train, y_test = getdata()
-    # log_reg_api = logreq_api("i love you", 2, X_train, y_train, X_test)
+    log_reg_api = logreq_api("i love you", 2, X_train, y_train, X_test)
     train("naive_bayes", X_train, y_train, X_test)

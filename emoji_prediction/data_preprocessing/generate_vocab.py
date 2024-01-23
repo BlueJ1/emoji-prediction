@@ -14,8 +14,8 @@ train_path = data_path / 'train.txt'
 emojis_path = data_path / 'emojis.txt'
 
 # Initializing the word and emoji vocabularies
-word_vocab = {}
-vocab_without_stopwords = {}
+word_vocab = {'': 0}
+vocab_without_stopwords = {'': 0}
 
 # Reading the embeddings file and populating the word vocabularies
 with open(embedding_path, 'r', encoding='utf-8') as file:

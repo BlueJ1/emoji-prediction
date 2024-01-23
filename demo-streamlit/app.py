@@ -6,6 +6,9 @@ from pydantic import BaseModel
 from pathlib import Path
 try:
     from emoji_prediction.models import four_gram
+    from emoji_prediction.models.four_gram import FourGram
+    from emoji_prediction.models import mlp_unified
+    from emoji_prediction.models import classic_ml_models_api
 except ModuleNotFoundError:
     import os
     import sys
