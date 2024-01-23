@@ -6,7 +6,6 @@ try:
     from emoji_prediction.models.evaluate_predictions import evaluate_predictions
 except ModuleNotFoundError:
     import sys
-    import four_gram_class
     from evaluate_predictions import evaluate_predictions
 
 
