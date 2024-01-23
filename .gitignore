@@ -8,4 +8,10 @@ env/*
 data/*
 emoji_prediction/data/*
 backend/env/*
+emoji_prediction/bin/*
+emoji_prediction/lib/*
+emoji_prediction/include/*
+emoji_prediction/etc/*
+emoji_prediction/share/*
+emoji_prediction/pyvenv.cfg
 ```

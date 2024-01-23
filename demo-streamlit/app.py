@@ -14,6 +14,7 @@ except ModuleNotFoundError:
             os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
     import four_gram
     import mlp_unified
+    import classic_ml_models_api
 
 
 class Model(Enum):
@@ -21,6 +22,7 @@ class Model(Enum):
     # ONEGRAM = 'One-gram'
     MLPCONCAT = 'MLP with concatenation of embeddings'
     # MLPSUM = 'MLP with sum of embeddings'
+    LOGREG = 'Logistic Regression'
 
 
 class ModelInput(BaseModel):
@@ -56,6 +58,9 @@ def predict(text: str, chosen_model: str, index: int) -> str:
     elif chosen_model == "MLP with sum of embeddings":
         print("Not implemented yet")
 
+    elif chosen_model == Model.LOGREG.value:
+        prediction = classic_ml_models_api.predict(text, index, "logreg")
+
     return prediction
 
 
@@ -64,8 +69,6 @@ def main():
 
     with st.form(key="pydantic_form"):
         data = sp.pydantic_input(key="my_input_model", model=ModelInput)
-        chosen_model = st.selectbox("Choose a model", [model.value for model in Model])
-        data["chosen_model"] = chosen_model
         print(data)
         st.write(data)
         if valid_index(data["index"], data["text"]) is False:
