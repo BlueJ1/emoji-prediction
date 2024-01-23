@@ -97,7 +97,7 @@ def train(model_name: str, X_train, y_train, X_test):
     if model_name == "log_reg":
         print("Chose Logistic Regression")
         model = LogisticRegression(C=1, penalty="elasticnet", l1_ratio=0.5, solver="saga",
-                                   max_iter=1, n_jobs=-1, verbose=1)
+                                   max_iter=300, n_jobs=-1, verbose=1)
     else:
         print("You need to choose a model")
         return
