@@ -6,11 +6,29 @@ import pandas as pd
 
 def parse_to_df(data_path: Path = None, file_path: Path = None, vocab_file="vocab.txt",
                 size_to_read: int = 0):
+    """
+    This function parses a text file into a pandas DataFrame. The text file should contain sequences of words and
+    emojis. Each line in the text file should contain a word and an emoji separated by a space. Empty lines indicate
+    the end of a sequence. The function also takes a vocabulary file for words and emojis. The vocabulary files
+    should contain one word or emoji per line. The function returns a DataFrame where each row represents a sequence.
+    The DataFrame has two columns: 'sequence_words' and 'sequence_emojis'. Each entry in 'sequence_words' is a numpy
+    array of integers representing the words in the sequence. Each entry in 'sequence_emojis' is a numpy array of
+    integers representing the emojis in the sequence. The integers are the indices of the words and emojis in the
+    vocabulary files.
+
+    Parameters: data_path (Path, optional): The path to the directory containing the data files. Defaults to the
+    'data' directory in the parent directory of this file. file_path (Path, optional): The path to the text file to
+    parse. Defaults to 'test.txt' in the data directory. vocab_file (str, optional): The name of the vocabulary file
+    for words. Defaults to 'vocab.txt'. size_to_read (int, optional): The number of bytes to read from the text file.
+    If 0, the entire file is read. Defaults to 0.
+
+    Returns:
+    DataFrame: A DataFrame where each row represents a sequence of words and emojis.
+    """
     if data_path is None:
         data_path = Path(__file__).parent.parent / 'data'
     if file_path is None:
-        file_path = data_path / 'train.txt'
-
+        file_path = data_path / 'test.txt'
     vocab_path = data_path / vocab_file
     emoji_path = data_path / 'emojis.txt'
 

@@ -32,3 +32,4 @@ tensorflow==2.15.0rc1
 tqdm==4.66.1
 nltk==3.8.1
 torch==2.1.2
+matplotlib==3.8.2
