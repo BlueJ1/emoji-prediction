@@ -13,6 +13,7 @@ except ModuleNotFoundError:
         os.path.join(os.path.join(os.path.dirname(
             os.path.abspath(__file__)), '..'), 'emoji_prediction'), 'models'))
     import four_gram
+    from four_gram import FourGram
     import mlp_unified
     import classic_ml_models_api
 
@@ -45,7 +46,7 @@ def add_prediction(prediction: str, text: str, index: int) -> str:
 
 
 def predict(text: str, chosen_model: str, index: int) -> str:
-
+    print(chosen_model == Model.FOURGRAM)
     prediction = ""
     if chosen_model == Model.FOURGRAM.value:
         prediction = four_gram.four_gram_api_predict(text, index)
@@ -73,6 +74,8 @@ def main():
 
     with st.form(key="pydantic_form"):
         data = sp.pydantic_input(key="my_input_model", model=ModelInput)
+        chosen_model = st.selectbox("Choose a model", [model.value for model in Model])
+        data["chosen_model"] = chosen_model
         print(data)
         st.write(data)
         if valid_index(data["index"], data["text"]) is False:
