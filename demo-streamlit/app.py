@@ -44,7 +44,7 @@ def add_prediction(prediction: str, text: str, index: int) -> str:
 
 
 def predict(text: str, chosen_model: str, index: int) -> str:
-    print(chosen_model == Model.FOURGRAM)
+
     prediction = ""
     if chosen_model == Model.FOURGRAM.value:
         prediction = four_gram.four_gram_api_predict(text, index)
@@ -59,7 +59,7 @@ def predict(text: str, chosen_model: str, index: int) -> str:
         print("Not implemented yet")
 
     elif chosen_model == Model.LOGREG.value:
-        prediction = classic_ml_models_api.predict(text, index, "logreg")
+        prediction = classic_ml_models_api.predict("log_reg", text)
 
     return prediction
 

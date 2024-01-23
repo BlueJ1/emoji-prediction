@@ -97,7 +97,7 @@ def train(model_name: str, X_train, y_train, X_test):
     if model_name == "log_reg":
         print("Chose Logistic Regression")
         model = LogisticRegression(C=1, penalty="elasticnet", l1_ratio=0.5, solver="saga",
-                                   max_iter=300, n_jobs=-1, verbose=1)
+                                   max_iter=10, n_jobs=-1, verbose=1)
     else:
         print("You need to choose a model")
         return
@@ -114,6 +114,40 @@ def train(model_name: str, X_train, y_train, X_test):
         pickle.dump(model, f)
 
     return model
+
+
+def predict(model_name: str, text: str):
+    model_path = Path(__file__).parent.parent / 'models'
+    data_path = Path(__file__).parent.parent / 'data'
+    emoji_path = data_path / 'emojis.txt'
+    emoji_to_unicode_path = data_path / 'emoji_name_to_unicode.txt'
+
+    # load the pickle file in model path
+    with open(model_path / f"{model_name}.pkl", "rb") as f:
+        model = pickle.load(f)
+
+    with open(emoji_path, 'r', encoding='utf-8') as f:
+        emoji_vocab = {idx: emoji[:-1] for idx, emoji in enumerate(f.readlines())}
+
+    with open(emoji_to_unicode_path, 'r', encoding='utf-8') as f:
+        emoji_to_unicode = {emoji: unicode for emoji, unicode in [line.split() for line in f.readlines()]}
+
+    # load emoji dict
+    with open(data_path / 'emojis.txt', 'r', encoding='utf-8') as f:
+        emoji_dict = {idx: emoji[:-1] for idx, emoji in enumerate(f.readlines())}
+
+    # add the emoji to the text
+    text = embed_text(text)
+    # make a 2d array
+    text = np.array([text])
+    print(f"Text shape: {text.shape}")
+    prediction = np.argmax(model.predict(text))
+    print(f"The emoji is {emoji_dict[prediction]}")
+    if emoji_dict[prediction] == 'O':
+        return "❤️"  # the most common emoji
+    else:
+        print(f"The prediction number is {prediction}")
+        return emoji_to_unicode[emoji_dict[prediction]]
 
 
 if __name__ == "__main__":
