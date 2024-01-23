@@ -18,7 +18,7 @@ def parse_to_df(data_path: Path = None, file_path: Path = None, vocab_file="voca
 
     Parameters: data_path (Path, optional): The path to the directory containing the data files. Defaults to the
     'data' directory in the parent directory of this file. file_path (Path, optional): The path to the text file to
-    parse. Defaults to 'test.txt' in the data directory. vocab_file (str, optional): The name of the vocabulary file
+    parse. Defaults to 'train.txt' in the data directory. vocab_file (str, optional): The name of the vocabulary file
     for words. Defaults to 'vocab.txt'. size_to_read (int, optional): The number of bytes to read from the text file.
     If 0, the entire file is read. Defaults to 0.
 
@@ -28,7 +28,7 @@ def parse_to_df(data_path: Path = None, file_path: Path = None, vocab_file="voca
     if data_path is None:
         data_path = Path(__file__).parent.parent / 'data'
     if file_path is None:
-        file_path = data_path / 'test.txt'
+        file_path = data_path / 'train.txt'
     vocab_path = data_path / vocab_file
     emoji_path = data_path / 'emojis.txt'
 

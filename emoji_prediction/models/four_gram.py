@@ -2,42 +2,185 @@ import numpy as np
 from pathlib import Path
 from tqdm import tqdm
 import pickle
-import pandas as pd
-
 try:
-    from emoji_prediction.models.four_gram_class import FourGram
-    from emoji_prediction.models import four_gram_class
     from emoji_prediction.models.evaluate_predictions import evaluate_predictions
 except ModuleNotFoundError:
     import sys
     import four_gram_class
-    # print(sys.path)
-    print("oopsie")
-    from four_gram_class import FourGram
     from evaluate_predictions import evaluate_predictions
 
 
+class FourGram:
+    """
+    A class used to represent a FourGram
+
+    ...
+
+    Attributes
+    ----------
+    words : list
+        a list of words that make up the four-gram
+
+    Methods
+    -------
+    __getitem__(self, item):
+        Returns the word at the given index in the four-gram
+
+    __len__(self):
+        Returns the length of the four-gram
+
+    __str__(self):
+        Returns a string representation of the four-gram
+
+    __repr__(self):
+        Returns a string representation of the four-gram
+
+    __eq__(self, other):
+        Checks if the four-gram is equal to another four-gram
+
+    __hash__(self):
+        Returns a hash value of the four-gram
+    """
+
+    def __init__(self, words):
+        """
+        Constructs all the necessary attributes for the FourGram object.
+
+        Parameters
+        ----------
+            words : list
+                a list of words that make up the four-gram
+        """
+        self.words = words
+
+    def __getitem__(self, item):
+        """
+        Returns the word at the given index in the four-gram
+
+        Parameters
+        ----------
+            item : int
+                index of the word in the four-gram
+
+        Returns
+        -------
+            str
+                word at the given index in the four-gram
+        """
+        return self.words[item]
+
+    def __len__(self):
+        """
+        Returns the length of the four-gram
+
+        Returns
+        -------
+            int
+                length of the four-gram
+        """
+        return len(self.words)
+
+    def __str__(self):
+        """
+        Returns a string representation of the four-gram
+
+        Returns
+        -------
+            str
+                string representation of the four-gram
+        """
+        return str(self.words)
+
+    def __repr__(self):
+        """
+        Returns a string representation of the four-gram
+
+        Returns
+        -------
+            str
+                string representation of the four-gram
+        """
+        return str(self.words)
+
+    def __eq__(self, other):
+        """
+        Checks if the four-gram is equal to another four-gram
+
+        Parameters
+        ----------
+            other : FourGram
+                another four-gram to compare with
+
+        Returns
+        -------
+            bool
+                True if the four-gram is equal to the other four-gram, False otherwise
+        """
+        return str(self) == str(other)
+
+    def __hash__(self):
+        """
+        Returns a hash value of the four-gram
+
+        Returns
+        -------
+            int
+                hash value of the four-gram
+        """
+        return hash(str(self.words))
+
+
 def four_gram_data(df):
+    """
+    Transforms the dataframe into X and y arrays for model training
+
+    Parameters
+    ----------
+        df : DataFrame
+            a dataframe containing 'words' and 'emoji' columns
+
+    Returns
+    -------
+        tuple
+            X and y arrays for model training
+    """
     X = df['words'].apply(lambda x: FourGram(x)).values
     y = df['emoji'].apply(int).values
     return X, y
 
 
 def four_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
+    """
+    Trains a four-gram model and evaluates its performance
+
+    Parameters
+    ----------
+        i : int
+            index of the current fold in cross-validation
+        X_train : array
+            training data
+        y_train : array
+            training labels
+        X_test : array
+            testing data
+        y_test : array
+            testing labels
+        results_dict : dict
+            dictionary to store the results
+        _ : None
+            placeholder for unused parameter
+    """
     data_path = Path(__file__).parent.parent / 'data'
     emoji_path = data_path / 'emojis.txt'
 
     with open(emoji_path, 'r', encoding='utf-8') as f:
         emoji_vocab = {w[:-1]: i for i, w in enumerate(f.readlines())}
 
-    unique_4_grams = set(X_train)
-    print(f'{len(unique_4_grams)} unique 4-grams in data')
-
     unique_emojis, counts = np.unique(y_train, return_counts=True)
     most_common_emoji = unique_emojis[np.argmax(counts)]
 
     four_gram_dict = {}
-    for words, emoji in tqdm(zip(X_train, y_train)):
+    for words, emoji in zip(X_train, y_train):
         if words in four_gram_dict:
             four_gram_dict[words][emoji] += 1
         else:
@@ -45,7 +188,7 @@ def four_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
             four_gram_dict[words][emoji] += 1
 
     # select argmax for each row
-    for key, value in tqdm(four_gram_dict.items()):
+    for key, value in four_gram_dict.items():
         four_gram_dict[key] = np.argmax(value)
 
     predictions = []
@@ -59,6 +202,18 @@ def four_gram(i, X_train, y_train, X_test, y_test, results_dict, _):
 
 
 def generate_four_gram(X, y, _):
+    """
+    Generates a four-gram model and saves it to a file
+
+    Parameters
+    ----------
+        X : array
+            training data
+        y : array
+            training labels
+        _ : None
+            placeholder for unused parameter
+    """
     data_path = Path(__file__).parent.parent / 'data'
     emoji_path = data_path / 'emojis.txt'
 
@@ -89,6 +244,23 @@ def generate_four_gram(X, y, _):
 
 def four_gram_process_api_data(sentence: str,
                                index: int, word_vocab: dict) -> FourGram:
+    """
+    Processes a sentence into a four-gram for API prediction
+
+    Parameters
+    ----------
+        sentence : str
+            input sentence
+        index : int
+            index of the word to predict the emoji for
+        word_vocab : dict
+            dictionary mapping words to their indices
+
+    Returns
+    -------
+        FourGram
+            four-gram instance for API prediction
+    """
     words = sentence.lower().split()
     if index < 2:
         words_before = [''] * (2 - index) + words[:index]
@@ -109,11 +281,25 @@ def four_gram_process_api_data(sentence: str,
 
 
 def four_gram_api_predict(sentence: str, index: int):
+    """
+    Predicts an emoji for a given word in a sentence using a four-gram model
+
+    Parameters
+    ----------
+        sentence : str
+            input sentence
+        index : int
+            index of the word to predict the emoji for
+
+    Returns
+    -------
+        str
+            predicted emoji in unicode
+    """
     data_path = Path(__file__).parent.parent / 'data'
     vocab_path = data_path / 'vocab.txt'
     emoji_path = data_path / 'emojis.txt'
     emoji_to_unicode_path = data_path / 'emoji_name_to_unicode.txt'
-    model_path = Path(__file__).parent.parent / 'models'
     four_gram_model_path = Path(__file__).parent / 'four_gram.pkl'
 
     print("We got to the four_gram_api_predict function")

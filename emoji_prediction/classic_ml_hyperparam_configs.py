@@ -8,7 +8,7 @@ parameters = [
     dict(
         name='baseline',
         data_preprocessing=baseline_data,
-        data_file='word_before_emoji_index.pkl',
+        data_file='word_before_emoji_index_without_stopwords.pkl',
         evaluate=baseline,
         hyperparameters=dict(),
         balance_dataset=False,
@@ -17,7 +17,7 @@ parameters = [
     dict(
         name='one_gram',
         data_preprocessing=one_gram_data,
-        data_file='word_before_emoji_index.pkl',
+        data_file='word_before_emoji_index_without_stopwords.pkl',
         evaluate=one_gram,
         hyperparameters=dict(),
         balance_dataset=False,
@@ -26,7 +26,7 @@ parameters = [
     dict(
         name='four_gram',
         data_preprocessing=four_gram_data,
-        data_file='words_around_emoji_index.pkl',
+        data_file='words_around_emoji_index_without_stopwords.pkl',
         evaluate=four_gram,
         hyperparameters=dict(),
         balance_dataset=False,
@@ -35,7 +35,7 @@ parameters = [
     dict(
         name='random_forest300GiniLog2',
         data_preprocessing=basic_ml_data,
-        data_file='word_around_emoji_concatenation_of_embeddings.pkl',
+        data_file='word_around_emoji_concatenation_of_embeddings_without_stopwords.pkl',
         evaluate=train_rf,
         hyperparameters=dict(n_estimators=300, criterion='gini', max_features='log2'),
         balance_dataset=False,
