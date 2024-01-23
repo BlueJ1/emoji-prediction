@@ -4,14 +4,14 @@ import numpy as np
 import pandas as pd
 
 
-def parse_to_df(data_path: Path = None, file_path: Path = None,
+def parse_to_df(data_path: Path = None, file_path: Path = None, vocab_file="vocab.txt",
                 size_to_read: int = 0):
     if data_path is None:
         data_path = Path(__file__).parent.parent / 'data'
     if file_path is None:
         file_path = data_path / 'train.txt'
 
-    vocab_path = data_path / 'vocab.txt'
+    vocab_path = data_path / vocab_file
     emoji_path = data_path / 'emojis.txt'
 
     with open(vocab_path, 'r', encoding='utf-8') as f:

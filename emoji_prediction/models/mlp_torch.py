@@ -8,7 +8,7 @@ import torch
 from sklearn.metrics import f1_score
 from sklearn.preprocessing import StandardScaler
 from torch import nn
-from torch.optim import SGD
+from torch.optim import SGD, AdamW
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 
@@ -34,12 +34,16 @@ class MLP(torch.nn.Module):
         super().__init__()
         self.fcs = nn.Sequential(OrderedDict(
             [("fc1", nn.Linear(input_dim, 512)),
+             ("bn1", nn.BatchNorm1d(512)),
              ("relu1", nn.ReLU()),
              ("fc2", nn.Linear(512, 256)),
+             ("bn2", nn.BatchNorm1d(256)),
              ("relu2", nn.ReLU()),
              ("fc3", nn.Linear(256, 128)),
+             ("bn3", nn.BatchNorm1d(128)),
              ("relu3", nn.ReLU()),
              ("fc4", nn.Linear(128, 128)),
+             ("bn4", nn.BatchNorm1d(128)),
              ("relu4", nn.ReLU()),
              ("fc5", nn.Linear(128, output_dim))]))
         self.softmax = nn.Softmax(dim=1)
@@ -70,6 +74,8 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
 
     # Build the MLP model
     model = MLP(input_dim, output_dim)
+    # optimizer = SGD(model.parameters(), lr=learning_rate, momentum=0.9)
+    optimizer = AdamW(model.parameters(), lr=learning_rate, weight_decay=1e-4)
 
     model.to(device)
 
@@ -89,26 +95,45 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
-    optimizer = SGD(model.parameters(), lr=learning_rate, momentum=0.9)
+    with tqdm(total=num_epochs, unit="epoch") as progress_bar:
+        for epoch in range(num_epochs):
+            model.train()
+            losses = []
+            f1_scores = []
+            for i, (X_batch, y_batch) in enumerate(train_dataloader):
+                X_batch = X_batch.to(device)
+                y_batch = y_batch.to(device)
 
-    for epoch in tqdm(range(num_epochs)):
-        model.train()
-        # with tqdm(total=len(train_dataloader), desc=f"Epoch {epoch + 1}/{num_epochs}", unit="batch") as progress_bar:
-        for i, (X_batch, y_batch) in enumerate(train_dataloader):
-            X_batch = X_batch.to(device)
-            y_batch = y_batch.to(device)
+                y_pred = model(X_batch)
+                loss, train_f1 = model.loss(y_pred, y_batch)
 
-            y_pred = model(X_batch)
-            loss, f1_score = model.loss(y_pred, y_batch)
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+                losses.append(loss.item())
+                f1_scores.append(train_f1)
 
-            # progress_bar.set_postfix_str(f"Loss: {loss:.2f}, F1 Score: {f1_score * 100:.2f}%")
-            # progress_bar.update(1)
+                model.zero_grad()
+                loss.backward()
+                optimizer.step()
+
+            val_losses = []
+            val_f1_scores = []
+
+            model.eval()
+            for i, (X_batch, y_batch) in enumerate(test_dataloader):
+                X_batch = X_batch.to(device)
+                y_batch = y_batch.to(device)
+
+                y_pred = model(X_batch)
+                loss, test_f1 = model.loss(y_pred, y_batch)
+
+                val_losses.append(loss.item())
+                val_f1_scores.append(test_f1)
+
+            progress_bar.set_postfix_str(f"Loss: {np.mean(losses):.2f}, F1 Score: {np.mean(f1_scores) * 100:.2f}%"
+                                         f"Val Loss: {np.mean(val_losses):.2f}, Val F1 Score: {np.mean(val_f1_scores) * 100:.2f}%")
+            progress_bar.update(1)
 
     model.eval()
-    y_pred = np.stack([np.argmax(model(x.to(device)).detach().cpu().numpy(), axis=1) for x, _ in test_dataloader])
+
 
     evaluation = evaluate_predictions(y_pred, y_test)
     print(evaluation["weighted_f1_score"])
@@ -116,16 +141,17 @@ def train_fold(fold_number, X_train, y_train, X_test, y_test, results_dict, hype
 
 
 def mlp_data(df):
-    expanded_df = df.apply(lambda row: pd.Series(row['words']), axis=1)
+    X = np.stack(df["words"].values)
+    # expanded_df = df.apply(lambda row: pd.Series(row['words']), axis=1)
 
     # Concatenate the expanded columns with the original DataFrame
-    result_df = pd.concat([df, expanded_df], axis=1)
+    # result_df = pd.concat([df, expanded_df], axis=1)
 
     # Drop the original array_column
-    result_df = result_df.drop('words', axis=1)
+    # result_df = result_df.drop('words', axis=1)
 
-    X = result_df.iloc[:, 49:].values
-    y = np.argmax(result_df.iloc[:, :49].values, axis=1)
+    # X = result_df.iloc[:, 49:].values
+    y = np.argmax(df.iloc[:, 1:].values, axis=1)
 
     print(X.shape, y.shape)
     # print(X)

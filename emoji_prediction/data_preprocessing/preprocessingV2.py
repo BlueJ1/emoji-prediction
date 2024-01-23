@@ -43,9 +43,9 @@ def concatenate_first_col(row):
          'emoji': row['emoji']})
 
 
-def generate_dictionaries():
+def generate_dictionaries(vocab_file="vocab.txt"):
     data_path = Path(__file__).parent.parent / 'data'
-    vocab_path = data_path / 'vocab.txt'
+    vocab_path = data_path / vocab_file
     embedding_path = data_path / 'glove.6B.50d.txt'
 
     with open(vocab_path, 'r', encoding='utf-8') as f:
@@ -63,9 +63,9 @@ def generate_dictionaries():
     return index_to_word, word_to_embedding, embedding.shape
 
 
-def load_basic_dataframe(size_in_MB):
+def load_basic_dataframe(size_in_MB, vocab_file="vocab.txt"):
     data_path = Path(__file__).parent.parent / 'data'
-    return parse_to_df(data_path=data_path,
+    return parse_to_df(data_path=data_path, vocab_file=vocab_file,
                        size_to_read=int(size_in_MB * 1024 ** 2))
 
 
@@ -116,15 +116,11 @@ def generate_sequence_dataframe(df: pd.DataFrame, word_to_embedding: dict,
     sequence = []
 
     for t, row in df.iterrows():
-        emoji_ix: np.ndarray = np.nonzero(row['sequence_emojis'])[0]
-        words = np.array([word_to_embedding[idx_to_word[word]]
-                          for word in row['sequence_words']])
-        # emojis = row['sequence_emojis'][emoji_ix]
-        if emoji_ix.size > 0:
-            for ix in emoji_ix:
-                new_words = np.insert(words, ix + 1, token)
-                # TODO: Why was there an ix + i here?
-                sequence.append((new_words, ))
+        emoji_ix: np.ndarray = np.flatnonzero(row['sequence_emojis'])
+        words = np.array([word_to_embedding[idx_to_word[word]] for word in row['sequence_words']])
+        for ix in emoji_ix:
+            new_words = np.insert(words, ix + 1, token)
+            sequence.append((new_words, row['sequence_emojis'][ix]))
 
     df_sequence = pd.DataFrame(sequence, columns=['word_sequence', 'emojis'])
     df_sequence.to_pickle(data_path / 'sequential_data.pkl')
@@ -132,7 +128,7 @@ def generate_sequence_dataframe(df: pd.DataFrame, word_to_embedding: dict,
 
 if __name__ == '__main__':
     t = time()
-    df = load_basic_dataframe(100)
+    df = load_basic_dataframe(10, vocab_file='vocab_without_stopwords.txt')
     ix_to_word, word_to_glove, shape = generate_dictionaries()
     generate_sequence_dataframe(df, word_to_glove, ix_to_word, token=-1)
     generate_train_dataframe(df, word_to_glove, ix_to_word, shape)

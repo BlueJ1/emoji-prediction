@@ -9,7 +9,7 @@ parameters = [
         hyperparameters=dict(input_dim=200,
                              lr=1e-4,
                              num_epochs=100,
-                             batch_size=4096),
+                             batch_size=2048),
         balance_dataset=False,
         parallel=False
     ),
@@ -21,7 +21,7 @@ parameters = [
         hyperparameters=dict(input_dim=200,
                              lr=1e-4,
                              num_epochs=50,
-                             batch_size=1024),
+                             batch_size=8096),
         balance_dataset=True,
         parallel=False
     ),
@@ -33,7 +33,7 @@ parameters = [
         hyperparameters=dict(input_dim=50,
                              lr=1e-5,
                              num_epochs=100,
-                             batch_size=1024),
+                             batch_size=8096),
         balance_dataset=True,
         parallel=False
     )
