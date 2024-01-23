@@ -7,6 +7,7 @@ from pathlib import Path
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import StandardScaler
 FOLD_NUMBER = 5
 
@@ -97,7 +98,12 @@ def train(model_name: str, X_train, y_train, X_test):
     if model_name == "log_reg":
         print("Chose Logistic Regression")
         model = LogisticRegression(C=1, penalty="elasticnet", l1_ratio=0.5, solver="saga",
-                                   max_iter=10, n_jobs=-1, verbose=1)
+                                   max_iter=20, n_jobs=-1, verbose=1)
+
+    elif model_name == "naive_bayes":
+        print("Chose Naive Bayes")
+        model = GaussianNB()
+
     else:
         print("You need to choose a model")
         return
@@ -152,5 +158,5 @@ def predict(model_name: str, text: str):
 
 if __name__ == "__main__":
     X_train, X_test, y_train, y_test = getdata()
-    log_reg_api = logreq_api("i love you", 2, X_train, y_train, X_test)
-    #train("log_reg", X_train, y_train, X_test)
+    # log_reg_api = logreq_api("i love you", 2, X_train, y_train, X_test)
+    train("naive_bayes", X_train, y_train, X_test)

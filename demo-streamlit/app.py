@@ -23,6 +23,7 @@ class Model(Enum):
     MLPCONCAT = 'MLP with concatenation of embeddings'
     # MLPSUM = 'MLP with sum of embeddings'
     LOGREG = 'Logistic Regression'
+    NAIVEBAYES = 'Naive Bayes'
 
 
 class ModelInput(BaseModel):
@@ -60,6 +61,9 @@ def predict(text: str, chosen_model: str, index: int) -> str:
 
     elif chosen_model == Model.LOGREG.value:
         prediction = classic_ml_models_api.predict("log_reg", text)
+
+    elif chosen_model == Model.NAIVEBAYES.value:
+        prediction = classic_ml_models_api.predict("naive_bayes", text)
 
     return prediction
 
